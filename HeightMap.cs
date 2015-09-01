@@ -12,7 +12,10 @@ namespace Project1
         public int size;
         public int max;
         private float[,] map;
+        private Vector3[,] vertexNormals;
+        private Color[,] colors;
         private float seed;
+        private float maxHeight;
         private float roughness;
         private Random rand;
 
@@ -22,12 +25,16 @@ namespace Project1
             size = (int) Math.Pow(2.0d, (double)detail) + 1;
             max = size - 1;
             map = new float[size,size];
+            vertexNormals = new Vector3[size, size];
+            colors = new Color[size, size];
             //Value to set the corners of map
             seed = max / 2;
+            maxHeight = seed;
             //Roughness determines steepness of terrain
             roughness = 0.8f;
             rand = new Random();
             GenerateMap();
+            GenerateVertexNormals();
         }
 
         //Fills this.map with random values using the Diamond-Square Algorithm
@@ -42,6 +49,47 @@ namespace Project1
             DiamondSquare(max);
         }
 
+        /** Generates Vertex Normals for this.map,
+         also sets colors... to avoid reiterating*/
+        private void GenerateVertexNormals()
+        {
+            Vector3 vertexNorm;
+            for (int y = 0; y < max; y++)
+            {
+                for (int x = 0; x < max; x++)
+                {
+                    vertexNorm = averageNorm(new Vector3[] {
+                        new Vector3(x-1,get(x - size, y + size),y+1), //Top Left
+                        new Vector3(x+1,get(x + size, y + size), y + 1), //Top Right
+                        new Vector3(x-1,get(x - size, y - size),y-1), //Bottom Left
+                        new Vector3(x+1,get(x + size, y - size), y-1) //Bottom Right
+                    });
+                    vertexNormals[x, y] = vertexNorm;
+                    colors[x, y] = SetColor(get(x, y));
+                }
+            }
+
+        }
+
+        private Color SetColor(float value)
+        {
+            if (value > .9 * maxHeight)
+            {
+                return Color.NavajoWhite;
+            }
+            if (value > .8 * maxHeight)
+            {
+                return Color.DarkGray;
+            }
+            if (value > .7 * maxHeight) 
+            {
+                return Color.LightGray;
+            }
+            else 
+            {
+                return Color.ForestGreen;
+            }
+        }
         //Runs the Diamond Square Algorithm for a SIZE x SIZE map.
         private void DiamondSquare(int size)
         {
@@ -78,7 +126,7 @@ namespace Project1
         private void Square(int x, int y, int size, float offset)
         {
             float avg = average(new float[] {
-                get(x - size, y - size), //Top Left
+                get(x - size, y + size), //Top Left
                 get(x + size, y + size), //Top Right
                 get(x - size, y - size), //Bottom Left
                 get(x + size, y - size) //Bottom Right
@@ -114,6 +162,22 @@ namespace Project1
             }
             return sum / count;
         }
+        /** Averages VALUES, if a value.Y is -1.0 this signifies
+         * that value falls outside the range of this.map,
+         * returns a Normalized Vector*/
+        private Vector3 averageNorm(Vector3[] values)
+        {
+            Vector3 sum = Vector3.Zero;
+            foreach (Vector3 value in values)
+            {
+                if (value.Y != -1.0f)
+                {
+                    sum += value;
+                }
+            }
+            sum.Normalize();
+            return sum;
+        }
         /**Setter method for setting values in this.map, X and Y will be set
          * to VALUE */
         private void set(int x, int y, float value) 
@@ -121,6 +185,9 @@ namespace Project1
             if (!(x < 0 || x > max || y < 0 || y > max))
             {
                 map[x, y] = value;
+                if (maxHeight < value) {
+                    maxHeight = value;
+                }
             }
         }
 
@@ -137,6 +204,16 @@ namespace Project1
             {
                 return map[x, y];
             }
+        }
+
+        public Vector3 getVertexNormal(int x, int y)
+        {
+            return vertexNormals[x, y];
+        }
+
+        public Color getColor(int x, int y)
+        {
+            return colors[x, y];
         }
 
         /** returns string representation of this.map, used for testing. */
