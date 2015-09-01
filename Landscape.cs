@@ -63,11 +63,18 @@ namespace Project1
             this.game = game;
         }
 
+
+        Vector3 currentPosition = new Vector3(0.0f, 80.0f, 0.0f);
+        Vector3 currentTarget = new Vector3(0.0f, 0.0f, 5.0f);
+        Vector3 currentUp = Vector3.UnitY;
+
         public override void Update(GameTime gameTime)
         {
-            // Rotate the cube.
             var time = (float)gameTime.TotalGameTime.TotalSeconds;
             //basicEffect.World = Matrix.RotationX(time) * Matrix.RotationY(time * 2.0f) * Matrix.RotationZ(time * .7f);
+            basicEffect.View = Matrix.LookAtLH(currentPosition, currentTarget, currentUp);
+
+
             basicEffect.Projection = Matrix.PerspectiveFovLH((float)Math.PI / 4.0f, (float)game.GraphicsDevice.BackBuffer.Width / game.GraphicsDevice.BackBuffer.Height, 0.1f, 100.0f);
         }
 
