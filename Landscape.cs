@@ -20,7 +20,6 @@ namespace Project1
             
             Terrain = new HeightMap(7);
             VertexPositionNormalColor[] terrain3D = new VertexPositionNormalColor[Terrain.max * Terrain.max * 6];
-            Console.WriteLine(Terrain);
             int index = 0;
             for (int z = 0; z < Terrain.max; z++)
             {
@@ -89,7 +88,8 @@ namespace Project1
                 Vector3 temp = (currentTarget - currentPosition);
                 temp.Normalize();
                 currentPosition += temp;
-                if (currentPosition.X < 0 || currentPosition.Y < Terrain.get((int)currentPosition.X, (int)currentPosition.Z) || currentPosition.Z < 0
+                if (currentPosition.X < 0 || currentPosition.Y < Terrain.get((int)currentPosition.X, (int)currentPosition.Z) || currentPosition.Z < 0 || currentPosition.X < 0
+                    || currentPosition.X > Terrain.max || currentPosition.Z > Terrain.max
                     || currentPosition.Y < Terrain.get((int)(currentPosition.X - 1), (int)(currentPosition.Z)) || currentPosition.Y < Terrain.get((int)(currentPosition.X), (int)(currentPosition.Z - 1))
                     || currentPosition.Y < Terrain.get((int)(currentPosition.X + 1), (int)(currentPosition.Z)) || currentPosition.Y < Terrain.get((int)(currentPosition.X), (int)(currentPosition.Z + 1)))
                     currentPosition -= temp;
@@ -105,6 +105,7 @@ namespace Project1
                 temp.Normalize();
                 currentPosition += temp;
                 if (currentPosition.X < 0 || currentPosition.Y < Terrain.get((int)currentPosition.X, (int)currentPosition.Z) || currentPosition.Z < 0
+                    || currentPosition.X > Terrain.max || currentPosition.Z > Terrain.max
                     || currentPosition.Y < Terrain.get((int)(currentPosition.X - 1), (int)(currentPosition.Z)) || currentPosition.Y < Terrain.get((int)(currentPosition.X), (int)(currentPosition.Z - 1))
                     || currentPosition.Y < Terrain.get((int)(currentPosition.X + 1), (int)(currentPosition.Z)) || currentPosition.Y < Terrain.get((int)(currentPosition.X), (int)(currentPosition.Z + 1)))
                     currentPosition -= temp;
@@ -120,6 +121,7 @@ namespace Project1
                 temp.Normalize();
                 currentPosition += temp;
                 if (currentPosition.X < 0 || currentPosition.Y < Terrain.get((int)currentPosition.X, (int)currentPosition.Z) || currentPosition.Z < 0
+                    || currentPosition.X > Terrain.max || currentPosition.Z > Terrain.max
                     || currentPosition.Y < Terrain.get((int)(currentPosition.X - 1), (int)(currentPosition.Z)) || currentPosition.Y < Terrain.get((int)(currentPosition.X), (int)(currentPosition.Z - 1))
                     || currentPosition.Y < Terrain.get((int)(currentPosition.X + 1), (int)(currentPosition.Z)) || currentPosition.Y < Terrain.get((int)(currentPosition.X), (int)(currentPosition.Z + 1)))
                     currentPosition -= temp;
@@ -135,6 +137,7 @@ namespace Project1
                 temp.Normalize();
                 currentPosition += temp;
                 if (currentPosition.X < 0 || currentPosition.Y < Terrain.get((int)currentPosition.X, (int)currentPosition.Z) || currentPosition.Z < 0
+                    || currentPosition.X > Terrain.max || currentPosition.Z > Terrain.max
                     || currentPosition.Y < Terrain.get((int)(currentPosition.X - 1), (int)(currentPosition.Z)) || currentPosition.Y < Terrain.get((int)(currentPosition.X), (int)(currentPosition.Z - 1))
                     || currentPosition.Y < Terrain.get((int)(currentPosition.X + 1), (int)(currentPosition.Z)) || currentPosition.Y < Terrain.get((int)(currentPosition.X), (int)(currentPosition.Z + 1)))
                     currentPosition -= temp;
