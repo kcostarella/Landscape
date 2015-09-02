@@ -34,9 +34,10 @@ namespace Project1
     {
         private GraphicsDeviceManager graphicsDeviceManager;
         private GameObject model;
-        private KeyboardManager keyboardManager;
-        private KeyboardState keyboardState;
-        private MouseManager mouseManager;
+        public KeyboardManager keyboardManager;
+        public KeyboardState keyboardState;
+        public MouseManager mouseManager;
+        public MouseState mouseState;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Project1Game" /> class.

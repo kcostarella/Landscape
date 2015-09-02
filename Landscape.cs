@@ -11,10 +11,14 @@ namespace Project1
     class Landscape : ColoredGameObject
     {
 
+        Vector3 currentPosition, currentTarget, currentUp;
+        //float prevMouseX, prevMouseY;
+        HeightMap Terrain;
+
         public Landscape(Game game)
         {
-
-            HeightMap Terrain = new HeightMap(5);
+            
+            Terrain = new HeightMap(5);
             VertexPositionNormalColor[] terrain3D = new VertexPositionNormalColor[Terrain.max * Terrain.max * 6];
             Console.WriteLine(Terrain);
             int index = 0;
@@ -47,6 +51,15 @@ namespace Project1
                     index++;
                 }
             }
+
+            //initialized here because I wanted the terrain details to place the initial position/target.
+            currentPosition = new Vector3(0.0f, Terrain.get(0, 0), 0.0f); //start on corner of map at height of terrain
+            currentTarget = new Vector3(Terrain.max, Terrain.get(Terrain.max, Terrain.max), Terrain.max); //looking across to the other corner
+            currentUp = Vector3.UnitY;
+            /*prevMouseX = ((Project1Game)this.game).mouseState.X;
+            prevMouseY = ((Project1Game)this.game).mouseState.Y;*/
+
+
             //Create an Arraz of VertexPositionNormalColor objects to draw landscape
             vertices = Buffer.Vertex.New(
                           game.GraphicsDevice, terrain3D);
@@ -64,17 +77,55 @@ namespace Project1
         }
 
 
-        Vector3 currentPosition = new Vector3(0.0f, 80.0f, 0.0f);
-        Vector3 currentTarget = new Vector3(0.0f, 0.0f, 5.0f);
-        Vector3 currentUp = Vector3.UnitY;
 
         public override void Update(GameTime gameTime)
         {
             var time = (float)gameTime.TotalGameTime.TotalSeconds;
-            //basicEffect.World = Matrix.RotationX(time) * Matrix.RotationY(time * 2.0f) * Matrix.RotationZ(time * .7f);
+
+            /*move forward if W is pressed. takes the directional vector of current position and current target, normalize it, and move the currentPosition and Target that amount.
+              Note: shifting currentTarget also to make sure we didn't go past the target*/
+            if (((Project1Game)this.game).keyboardState.IsKeyDown(SharpDX.Toolkit.Input.Keys.W)) 
+            {
+                Vector3 temp = (currentTarget - currentPosition);
+                temp.Normalize();
+                currentPosition += temp;
+                currentTarget += temp;
+            }
+
+            /*move backward if S is pressed. takes the negative directional vector of current position and current target, normalize it, and move the currentPosition that amount.
+              Note: shifting currentTarget also to make sure we didn't go past the target*/
+            else if (((Project1Game)this.game).keyboardState.IsKeyDown(SharpDX.Toolkit.Input.Keys.S))
+            {
+                Vector3 temp = (currentPosition - currentTarget);
+                temp.Normalize();
+                currentPosition += temp;
+                currentTarget += temp;
+            }
+
+            /*move left if A is pressed. takes the cross product of current position and current target based on right hand rule, normalize it, and move the currentPosition that amount.
+              Note: shifting currentTarget to make sure we're facing the same direction*/
+            else if (((Project1Game)this.game).keyboardState.IsKeyDown(SharpDX.Toolkit.Input.Keys.A))
+            {
+                Vector3 temp = Vector3.Cross(currentUp,currentTarget);
+                temp.Normalize();
+                currentPosition += temp;
+                currentTarget += temp;
+            }
+
+            /*move right if D is pressed. takes the cross product of current position and current target based on right hand rule, normalize it, and move the currentPosition that amount.
+              Note: shifting currentTarget to make sure we're facing the same direction*/
+            else if (((Project1Game)this.game).keyboardState.IsKeyDown(SharpDX.Toolkit.Input.Keys.D))
+            {
+                Vector3 temp = Vector3.Cross(currentTarget, currentUp);
+                temp.Normalize();
+                currentPosition += temp;
+                currentTarget += temp;
+            }
+            /*if (((Project1Game)this.game).mouseState.X != prevMouseX)
+            {
+
+            }*/
             basicEffect.View = Matrix.LookAtLH(currentPosition, currentTarget, currentUp);
-
-
             basicEffect.Projection = Matrix.PerspectiveFovLH((float)Math.PI / 4.0f, (float)game.GraphicsDevice.BackBuffer.Width / game.GraphicsDevice.BackBuffer.Height, 0.1f, 100.0f);
         }
 
