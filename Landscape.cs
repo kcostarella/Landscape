@@ -17,7 +17,6 @@ namespace Project1
 
         public Landscape(Game game)
         {
-            
             Terrain = new HeightMap(7);
             VertexPositionNormalColor[] terrain3D = new VertexPositionNormalColor[Terrain.max * Terrain.max * 6];
             int index = 0;
@@ -53,10 +52,10 @@ namespace Project1
 
             //initialized here because I wanted the terrain details to place the initial position/target.
             currentPosition = new Vector3(0.0f, (Terrain.get(0, 0)+10.0f), 0.0f); //start on corner of map at height of terrain
-            currentTarget = new Vector3(Terrain.max, Terrain.get(Terrain.max, Terrain.max), Terrain.max); //looking across to the other corner
+            currentTarget = new Vector3(Terrain.max, (Terrain.get(0, 0) + 10.0f), Terrain.max); //looking across to other corner (same height)
             currentUp = Vector3.UnitY;
-            /*prevMouseX = ((Project1Game)this.game).mouseState.X;
-            prevMouseY = ((Project1Game)this.game).mouseState.Y;*/
+            prevMouseX = 0.5f;
+            prevMouseY = 0.5f;
 
 
             //Create an Array of VertexPositionNormalColor objects to draw landscape
@@ -145,10 +144,10 @@ namespace Project1
                     currentTarget += temp;
             }
 
-            float Yaw = (float)Math.PI * 2 * (((Project1Game)this.game).mouseState.X - prevMouseX);
+            float Yaw = ((float)Math.PI * 2 * (((Project1Game)this.game).mouseState.X - prevMouseX));
             prevMouseX = ((Project1Game)this.game).mouseState.X;
 
-            float Pitch = (float)Math.PI * 2 * (((Project1Game)this.game).mouseState.Y - prevMouseY);
+            float Pitch = (float)Math.PI * (((Project1Game)this.game).mouseState.Y - prevMouseY);
             prevMouseY = ((Project1Game)this.game).mouseState.Y;
 
             float Roll = 0.0f;
