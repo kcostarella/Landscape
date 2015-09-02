@@ -12,7 +12,7 @@ namespace Project1
     {
 
         Vector3 currentPosition, currentTarget, currentUp;
-        //float prevMouseX, prevMouseY;
+        float prevMouseX, prevMouseY;
         HeightMap Terrain;
 
         public Landscape(Game game)
@@ -53,7 +53,7 @@ namespace Project1
             }
 
             //initialized here because I wanted the terrain details to place the initial position/target.
-            currentPosition = new Vector3(0.0f, Terrain.get(0, 0), 0.0f); //start on corner of map at height of terrain
+            currentPosition = new Vector3(0.0f, (Terrain.get(0, 0)+5.0f), 0.0f); //start on corner of map at height of terrain
             currentTarget = new Vector3(Terrain.max, Terrain.get(Terrain.max, Terrain.max), Terrain.max); //looking across to the other corner
             currentUp = Vector3.UnitY;
             /*prevMouseX = ((Project1Game)this.game).mouseState.X;
@@ -89,43 +89,79 @@ namespace Project1
                 Vector3 temp = (currentTarget - currentPosition);
                 temp.Normalize();
                 currentPosition += temp;
-                currentTarget += temp;
+                if (currentPosition.X < 0 || currentPosition.Y < Terrain.get((int)currentPosition.X, (int)currentPosition.Z) || currentPosition.Z < 0
+                    || currentPosition.Y < Terrain.get((int)(currentPosition.X - 1), (int)(currentPosition.Z)) || currentPosition.Y < Terrain.get((int)(currentPosition.X), (int)(currentPosition.Z - 1))
+                    || currentPosition.Y < Terrain.get((int)(currentPosition.X + 1), (int)(currentPosition.Z)) || currentPosition.Y < Terrain.get((int)(currentPosition.X), (int)(currentPosition.Z + 1)))
+                    currentPosition -= temp;
+                else
+                    currentTarget += temp;
             }
 
             /*move backward if S is pressed. takes the negative directional vector of current position and current target, normalize it, and move the currentPosition that amount.
               Note: shifting currentTarget also to make sure we didn't go past the target*/
-            else if (((Project1Game)this.game).keyboardState.IsKeyDown(SharpDX.Toolkit.Input.Keys.S))
+            if (((Project1Game)this.game).keyboardState.IsKeyDown(SharpDX.Toolkit.Input.Keys.S))
             {
                 Vector3 temp = (currentPosition - currentTarget);
                 temp.Normalize();
                 currentPosition += temp;
-                currentTarget += temp;
+                if (currentPosition.X < 0 || currentPosition.Y < Terrain.get((int)currentPosition.X, (int)currentPosition.Z) || currentPosition.Z < 0
+                    || currentPosition.Y < Terrain.get((int)(currentPosition.X - 1), (int)(currentPosition.Z)) || currentPosition.Y < Terrain.get((int)(currentPosition.X), (int)(currentPosition.Z - 1))
+                    || currentPosition.Y < Terrain.get((int)(currentPosition.X + 1), (int)(currentPosition.Z)) || currentPosition.Y < Terrain.get((int)(currentPosition.X), (int)(currentPosition.Z + 1)))
+                    currentPosition -= temp;
+                else
+                    currentTarget += temp;
             }
 
             /*move left if A is pressed. takes the cross product of current position and current target based on right hand rule, normalize it, and move the currentPosition that amount.
               Note: shifting currentTarget to make sure we're facing the same direction*/
-            else if (((Project1Game)this.game).keyboardState.IsKeyDown(SharpDX.Toolkit.Input.Keys.A))
-            {
-                Vector3 temp = Vector3.Cross(currentUp,currentTarget);
-                temp.Normalize();
-                currentPosition += temp;
-                currentTarget += temp;
-            }
-
-            /*move right if D is pressed. takes the cross product of current position and current target based on right hand rule, normalize it, and move the currentPosition that amount.
-              Note: shifting currentTarget to make sure we're facing the same direction*/
-            else if (((Project1Game)this.game).keyboardState.IsKeyDown(SharpDX.Toolkit.Input.Keys.D))
+            if (((Project1Game)this.game).keyboardState.IsKeyDown(SharpDX.Toolkit.Input.Keys.A))
             {
                 Vector3 temp = Vector3.Cross(currentTarget, currentUp);
                 temp.Normalize();
                 currentPosition += temp;
-                currentTarget += temp;
+                if (currentPosition.X < 0 || currentPosition.Y < Terrain.get((int)currentPosition.X, (int)currentPosition.Z) || currentPosition.Z < 0
+                    || currentPosition.Y < Terrain.get((int)(currentPosition.X - 1), (int)(currentPosition.Z)) || currentPosition.Y < Terrain.get((int)(currentPosition.X), (int)(currentPosition.Z - 1))
+                    || currentPosition.Y < Terrain.get((int)(currentPosition.X + 1), (int)(currentPosition.Z)) || currentPosition.Y < Terrain.get((int)(currentPosition.X), (int)(currentPosition.Z + 1)))
+                    currentPosition -= temp;
+                else
+                    currentTarget += temp;
             }
-            /*if (((Project1Game)this.game).mouseState.X != prevMouseX)
+
+            /*move right if D is pressed. takes the cross product of current position and current target based on right hand rule, normalize it, and move the currentPosition that amount.
+              Note: shifting currentTarget to make sure we're facing the same direction*/
+            if (((Project1Game)this.game).keyboardState.IsKeyDown(SharpDX.Toolkit.Input.Keys.D))
+            {
+                Vector3 temp = Vector3.Cross(currentUp, currentTarget);
+                temp.Normalize();
+                currentPosition += temp;
+                if (currentPosition.X < 0 || currentPosition.Y < Terrain.get((int)currentPosition.X, (int)currentPosition.Z) || currentPosition.Z < 0
+                    || currentPosition.Y < Terrain.get((int)(currentPosition.X - 1), (int)(currentPosition.Z)) || currentPosition.Y < Terrain.get((int)(currentPosition.X), (int)(currentPosition.Z - 1))
+                    || currentPosition.Y < Terrain.get((int)(currentPosition.X + 1), (int)(currentPosition.Z)) || currentPosition.Y < Terrain.get((int)(currentPosition.X), (int)(currentPosition.Z + 1)))
+                    currentPosition -= temp;
+                else
+                    currentTarget += temp;
+            }
+
+            /*if (((Project1Game)this.game).keyboardState.IsKeyDown(SharpDX.Toolkit.Input.Keys.Q))
+            {
+            }
+
+            if (((Project1Game)this.game).keyboardState.IsKeyDown(SharpDX.Toolkit.Input.Keys.E))
+            {
+            }
+            
+            if (((Project1Game)this.game).mouseState.X != prevMouseX)
+            {
+
+            }
+
+            if (((Project1Game)this.game).mouseState.X != prevMouseX)
             {
 
             }*/
             //basicEffect.View = Matrix.LookAtLH(currentPosition, currentTarget, currentUp);
+
+            basicEffect.View = Matrix.LookAtLH(currentPosition, currentTarget, currentUp);
             basicEffect.Projection = Matrix.PerspectiveFovLH((float)Math.PI / 4.0f, (float)game.GraphicsDevice.BackBuffer.Width / game.GraphicsDevice.BackBuffer.Height, 0.1f, 100.0f);
         }
 
