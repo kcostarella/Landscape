@@ -18,7 +18,7 @@ namespace Project1
         public Landscape(Game game)
         {
             
-            Terrain = new HeightMap(2);
+            Terrain = new HeightMap(7);
             VertexPositionNormalColor[] terrain3D = new VertexPositionNormalColor[Terrain.max * Terrain.max * 6];
             Console.WriteLine(Terrain);
             int index = 0;
@@ -53,7 +53,7 @@ namespace Project1
             }
 
             //initialized here because I wanted the terrain details to place the initial position/target.
-            currentPosition = new Vector3(0.0f, (Terrain.get(0, 0)+5.0f), 0.0f); //start on corner of map at height of terrain
+            currentPosition = new Vector3(0.0f, (Terrain.get(0, 0)+10.0f), 0.0f); //start on corner of map at height of terrain
             currentTarget = new Vector3(Terrain.max, Terrain.get(Terrain.max, Terrain.max), Terrain.max); //looking across to the other corner
             currentUp = Vector3.UnitY;
             /*prevMouseX = ((Project1Game)this.game).mouseState.X;
@@ -67,7 +67,7 @@ namespace Project1
             basicEffect = new BasicEffect(game.GraphicsDevice)
             {
                 VertexColorEnabled = true,
-                View = Matrix.LookAtLH(new Vector3(0.0f, 20.0f, 0.0f ), new Vector3(0.0f,0.0f,0.5f), Vector3.UnitY),
+                View = Matrix.LookAtLH(new Vector3(0.0f, 40.0f, 0.0f ), new Vector3(0.0f,0.0f,0.5f), Vector3.UnitY),
                 Projection = Matrix.PerspectiveFovLH((float)Math.PI / 4.0f, (float)game.GraphicsDevice.BackBuffer.Width / game.GraphicsDevice.BackBuffer.Height, -10.0f, Terrain.max + 10.0f),
                 World = Matrix.Identity
             };
@@ -159,7 +159,6 @@ namespace Project1
             {
 
             }*/
-            //basicEffect.View = Matrix.LookAtLH(currentPosition, currentTarget, currentUp);
 
             basicEffect.View = Matrix.LookAtLH(currentPosition, currentTarget, currentUp);
             basicEffect.Projection = Matrix.PerspectiveFovLH((float)Math.PI / 4.0f, (float)game.GraphicsDevice.BackBuffer.Width / game.GraphicsDevice.BackBuffer.Height, 0.1f, 100.0f);

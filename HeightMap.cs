@@ -31,7 +31,7 @@ namespace Project1
             seed = max / 2;
             maxHeight = seed;
             //Roughness determines steepness of terrain
-            roughness = 0.8f;
+            roughness = 0.2f;
             rand = new Random();
             GenerateMap();
             GenerateVertexNormals();
@@ -62,11 +62,13 @@ namespace Project1
             {
                 for (int x = 0; x < max; x++)
                 {
-                    surfaceNormals[x,y] = SurfaceNormal(
+                    //Each Surface Normal gets updated 2 or 4 times!
+                    SurfaceNormal(
                         new Vector3(x,get(x, y),y), //frontleft
                         new Vector3(x,get(x, y + 1), y + 1), //backleft
                         new Vector3(x+1,get(x+1, y),y), //frontright
-                        new Vector3(x+1,get(x + 1, y + 1), y+1) //backright
+                        new Vector3(x+1,get(x + 1, y + 1), y+1), //backright
+                        surfaceNormals
                     );
                     
                 }
@@ -136,7 +138,7 @@ namespace Project1
             {
                 for (int x = half; x < max; x = x + size)
                 {
-                    Square(x, y, half, rand.NextFloat(-1.0f, 1.01f) * scale * 2 - scale );
+                    Square(x, y, half, rand.NextFloat(-1.0f, 1.01f) * scale);
                 }
             }
             //Set Center Point(s) of the Diamond
@@ -144,7 +146,7 @@ namespace Project1
             {
                 for (int x = (y + half) % size; x <= max; x += size)
                 {
-                    Diamond(x, y, half, rand.NextFloat(-1.0f, 1.01f) * scale * 2 - scale);
+                    Diamond(x, y, half, rand.NextFloat(-1.0f, 1.01f) * scale);
                 }
             }
             //Run DimondSquare on the subsize map
@@ -209,9 +211,9 @@ namespace Project1
             return sum;
         }
 
-        private Vector3 SurfaceNormal(Vector3 frontleft, Vector3 backleft, Vector3 frontright, Vector3 backright)
+        private void SurfaceNormal(Vector3 frontleft, Vector3 backleft, Vector3 frontright, Vector3 backright, Vector3[,] surfaceNormals)
         {
-
+           
         }
         /**Setter method for setting values in this.map, X and Y will be set
          * to VALUE */
