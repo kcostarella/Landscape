@@ -76,6 +76,8 @@ namespace Project1
 
         protected override void Update(GameTime gameTime)
         {
+            keyboardState = keyboardManager.GetState();
+            mouseState = mouseManager.GetState();
             model.Update(gameTime);
 
             // Handle base.Update
