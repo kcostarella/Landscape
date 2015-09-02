@@ -18,7 +18,7 @@ namespace Project1
         public Landscape(Game game)
         {
             
-            Terrain = new HeightMap(5);
+            Terrain = new HeightMap(2);
             VertexPositionNormalColor[] terrain3D = new VertexPositionNormalColor[Terrain.max * Terrain.max * 6];
             Console.WriteLine(Terrain);
             int index = 0;
@@ -60,14 +60,14 @@ namespace Project1
             prevMouseY = ((Project1Game)this.game).mouseState.Y;*/
 
 
-            //Create an Arraz of VertexPositionNormalColor objects to draw landscape
+            //Create an Array of VertexPositionNormalColor objects to draw landscape
             vertices = Buffer.Vertex.New(
                           game.GraphicsDevice, terrain3D);
 
             basicEffect = new BasicEffect(game.GraphicsDevice)
             {
                 VertexColorEnabled = true,
-                View = Matrix.LookAtLH(new Vector3(0.0f, 80.0f, 0.0f ), new Vector3(0.0f,0.0f,5.0f), Vector3.UnitY),
+                View = Matrix.LookAtLH(new Vector3(0.0f, 20.0f, 0.0f ), new Vector3(0.0f,0.0f,0.5f), Vector3.UnitY),
                 Projection = Matrix.PerspectiveFovLH((float)Math.PI / 4.0f, (float)game.GraphicsDevice.BackBuffer.Width / game.GraphicsDevice.BackBuffer.Height, -10.0f, Terrain.max + 10.0f),
                 World = Matrix.Identity
             };
@@ -125,7 +125,7 @@ namespace Project1
             {
 
             }*/
-            basicEffect.View = Matrix.LookAtLH(currentPosition, currentTarget, currentUp);
+            //basicEffect.View = Matrix.LookAtLH(currentPosition, currentTarget, currentUp);
             basicEffect.Projection = Matrix.PerspectiveFovLH((float)Math.PI / 4.0f, (float)game.GraphicsDevice.BackBuffer.Width / game.GraphicsDevice.BackBuffer.Height, 0.1f, 100.0f);
         }
 
