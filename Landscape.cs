@@ -84,7 +84,7 @@ namespace Project1
 
             /*move forward if W is pressed. takes the directional vector of current position and current target, normalize it, and move the currentPosition and Target that amount.
               Note: shifting currentTarget also to make sure we didn't go past the target*/
-            if (((Project1Game)this.game).keyboardState.IsKeyDown(SharpDX.Toolkit.Input.Keys.W)) 
+            if (((Project1Game)this.game).keyboardState.IsKeyDown(SharpDX.Toolkit.Input.Keys.W))
             {
                 Vector3 temp = (currentTarget - currentPosition);
                 temp.Normalize();
@@ -142,23 +142,20 @@ namespace Project1
                     currentTarget += temp;
             }
 
-            /*if (((Project1Game)this.game).keyboardState.IsKeyDown(SharpDX.Toolkit.Input.Keys.Q))
-            {
-            }
+            float Yaw = (float)Math.PI * 2 * (((Project1Game)this.game).mouseState.X - prevMouseX);
+            prevMouseX = ((Project1Game)this.game).mouseState.X;
 
+            float Pitch = (float)Math.PI * 2 * (((Project1Game)this.game).mouseState.Y - prevMouseY);
+            prevMouseY = ((Project1Game)this.game).mouseState.Y;
+
+            float Roll = 0.0f;
+            if (((Project1Game)this.game).keyboardState.IsKeyDown(SharpDX.Toolkit.Input.Keys.Q))
+                Roll -= 0.1f;
             if (((Project1Game)this.game).keyboardState.IsKeyDown(SharpDX.Toolkit.Input.Keys.E))
-            {
-            }
-            
-            if (((Project1Game)this.game).mouseState.X != prevMouseX)
-            {
+                Roll += 0.1f;
 
-            }
-
-            if (((Project1Game)this.game).mouseState.X != prevMouseX)
-            {
-
-            }*/
+            Matrix translation = Matrix.RotationYawPitchRoll(Yaw, Pitch, Roll);
+            currentTarget = Vector3.TransformCoordinate(currentTarget, translation);
 
             basicEffect.View = Matrix.LookAtLH(currentPosition, currentTarget, currentUp);
             basicEffect.Projection = Matrix.PerspectiveFovLH((float)Math.PI / 4.0f, (float)game.GraphicsDevice.BackBuffer.Width / game.GraphicsDevice.BackBuffer.Height, 0.1f, 100.0f);
