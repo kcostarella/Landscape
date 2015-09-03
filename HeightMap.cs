@@ -15,7 +15,7 @@ namespace Project1
         private Vector3[,] vertexNormals;
         private Color[,] colors;
         private float seed;
-        private float maxHeight;
+        public float maxHeight;
         private float roughness;
         private Random rand;
 
@@ -31,7 +31,7 @@ namespace Project1
             seed = max / 2;
             maxHeight = seed;
             //Roughness determines steepness of terrain
-            roughness = 0.2f;
+            roughness = 0.15f;
             rand = new Random();
             GenerateMap();
             GenerateVertexNormals();
@@ -54,10 +54,15 @@ namespace Project1
          also sets colors... to avoid reiterating*/
         private void GenerateVertexNormals()
         {
-            Vector3[,] surfaceNormals = new Vector3[size, size];
-            Vector3 vertexNorm;
-            
-            //First Generate Surface Normals
+            //First, Populate the array of vertex norms. Also Sets Colors cuz... why not do it here right?
+            for (int y = 0; y <= max; y++)
+			{
+			    for (int x = 0; x <= max; x++) {
+                    vertexNormals[x,y] = Vector3.Zero;
+                    colors[x, y] = SetColor(map[x, y]);
+                }
+			}
+            //Then Generate Surface Normals
             for (int y = 0; y < max; y++)
             {
                 for (int x = 0; x < max; x++)
@@ -67,60 +72,80 @@ namespace Project1
                         new Vector3(x,get(x, y),y), //frontleft
                         new Vector3(x,get(x, y + 1), y + 1), //backleft
                         new Vector3(x+1,get(x+1, y),y), //frontright
-                        new Vector3(x+1,get(x + 1, y + 1), y+1), //backright
-                        surfaceNormals
+                        new Vector3(x+1,get(x + 1, y + 1), y+1) //backright
                     );
                     
                 }
             }
 
-            for (int y = 0; y < max; y++)
+            for (int y = 0; y <= max; y++)
             {
-                for (int x = 0; x < max; x++)
+                for (int x = 0; x <= max; x++)
                 {
-                    vertexNorm = averageNorm(new Vector3[] {
-                        new Vector3(x-1,get(x - size, y + size),y+1), //Top Left
-                        new Vector3(x+1,get(x + size, y + size), y + 1), //Top Right
-                        new Vector3(x-1,get(x - size, y - size),y-1), //Bottom Left
-                        new Vector3(x+1,get(x + size, y - size), y-1) //Bottom Right
-                    });
-                    vertexNormals[x, y] = vertexNorm;
-                    colors[x, y] = SetColor(get(x, y));
+                    vertexNormals[x, y].Normalize();
+                    
                 }
             }
+
 
         }
 
         private Color SetColor(float value)
         {
+            float val;
+            float coin;
             if (value > .9 * maxHeight)
             {
-                return Color.NavajoWhite;
+                val = weight(0.8f, .9f, value / maxHeight);
+                coin = rand.NextFloat(0.0f, 1.01f);
+                if (val  >= coin)
+                {
+                    return Color.LightGray;
+                }
+                else
+                {
+                    return Color.SlateGray;
+                }
             }
             if (value > .8 * maxHeight)
             {
-                return Color.DarkGray;
+                val = weight(0.8f , .9f, value/maxHeight);
+                coin = rand.NextFloat(0.0f, 1.01f);
+                if (val >= coin)
+                {
+                    return Color.LightGray;
+                }
+                else
+                {
+                    return Color.DarkSlateGray;
+                }
             }
-            if (value > .7 * maxHeight) 
+            if (value > .7 * maxHeight)
             {
-                return Color.LightGray;
-            }
-            if (value > .6 * maxHeight)
-            {
-                return Color.DarkGreen;
+                val = weight(0.7f , .8f, value/maxHeight);
+                coin = rand.NextFloat(0.0f, 1.01f);
+                if (val - 0.4 >= coin)
+                {
+                    return Color.DarkSlateGray;
+                }
+                else
+                {
+                    return Color.DarkGreen;
+                }
             }
 
-            if (value > .5 * maxHeight)
+            if (value > .65 * maxHeight)
             {
-                return Color.ForestGreen;
-            }
-            if (value > .4 * maxHeight)
-            {
-                return Color.Brown;
+                return Color.SaddleBrown;
             }
             {
                 return Color.SandyBrown;
             }
+        }
+
+        private float weight(float lower, float upper, float val)
+        {
+            return 10 * upper * ((val - lower) / upper);
         }
         //Runs the Diamond Square Algorithm for a SIZE x SIZE map.
         private void DiamondSquare(int size)
@@ -194,26 +219,36 @@ namespace Project1
             }
             return sum / count;
         }
-        /** Averages VALUES, if a value.Y is -1.0 this signifies
-         * that value falls outside the range of this.map,
-         * returns a Normalized Vector*/
-        private Vector3 averageNorm(Vector3[] values)
+       
+        private void SurfaceNormal(Vector3 frontleft, Vector3 backleft, Vector3 frontright, Vector3 backright)
         {
-            Vector3 sum = Vector3.Zero;
-            foreach (Vector3 value in values)
-            {
-                if (value.Y != -1.0f)
-                {
-                    sum += value;
-                }
-            }
-            sum.Normalize();
-            return sum;
-        }
+            Vector3 v;
+            Vector3 w;
+            Vector3 vertexNormal;
+           //Surface Normal for triangle 1
+            v = backleft - frontleft;
+            w = backright - frontleft;
 
-        private void SurfaceNormal(Vector3 frontleft, Vector3 backleft, Vector3 frontright, Vector3 backright, Vector3[,] surfaceNormals)
-        {
-           
+            vertexNormal = new Vector3((v.Y * w.Z) - (v.Z * w.Y), (v.Z * w.X) - (v.X * w.Z), (v.X * w.Y) - (v.Y * w.X));
+
+            //Front Left
+            vertexNormals[(int) frontleft.X, (int) frontleft.Z] += vertexNormal;
+            //Back Left
+            vertexNormals[(int)backleft.X, (int)backleft.Z] += vertexNormal;
+            // Back Right
+            vertexNormals[(int)backright.X, (int)backright.Z] += vertexNormal;
+
+            //Surface Normal for triangle 2
+            v = backright - frontleft;
+            w = frontright - frontleft;
+            vertexNormal = new Vector3((v.Y * w.Z) - (v.Z * w.Y), (v.Z * w.X) - (v.X * w.Z), (v.X * w.Y) - (v.Y * w.X));
+
+            //Front Left
+            vertexNormals[(int)frontleft.X, (int)frontleft.Z] += vertexNormal;
+            //Back Right
+            vertexNormals[(int)backright.X, (int)backright.Z] += vertexNormal;
+            //Front Right
+            vertexNormals[(int)frontright.X, (int)frontright.Z] += vertexNormal;
         }
         /**Setter method for setting values in this.map, X and Y will be set
          * to VALUE */

@@ -18,8 +18,8 @@ namespace Project1
         public Landscape(Game game)
         {
             
-            Terrain = new HeightMap(7);
-            VertexPositionNormalColor[] terrain3D = new VertexPositionNormalColor[Terrain.max * Terrain.max * 6];
+            Terrain = new HeightMap(10);
+            VertexPositionNormalColor[] terrain3D = new VertexPositionNormalColor[Terrain.max * Terrain.max * 6  + 6];
             int index = 0;
             for (int z = 0; z < Terrain.max; z++)
             {
@@ -28,7 +28,6 @@ namespace Project1
                     // Front left.
                     terrain3D[index] = new VertexPositionNormalColor(new Vector3(x, Terrain.get(x,z), z), Terrain.getVertexNormal(x,z) , Terrain.getColor(x,z));
                     index++;
-
                     // Back left.
                     terrain3D[index] = new VertexPositionNormalColor(new Vector3(x, Terrain.get(x, z + 1), z + 1), Terrain.getVertexNormal(x, z + 1), Terrain.getColor(x, z+1));
                     index++;
@@ -51,6 +50,33 @@ namespace Project1
                 }
             }
 
+            Color blue = new Color(new Vector3(0.0f, 0.0f, 255.0f), 0.5f);
+
+            // Front left.
+            terrain3D[index] = new VertexPositionNormalColor(new Vector3(0.0f, 0.7f * Terrain.maxHeight, 0.0f), new Vector3(0.0f, 1.0f, 0.0f), blue);
+            index++;
+            // Back left.
+            terrain3D[index] = new VertexPositionNormalColor(new Vector3(0.0f, 0.7f * Terrain.maxHeight, Terrain.max), new Vector3(0.0f, 1.0f, 0.0f), blue);
+            index++;
+
+            // Back right.
+            terrain3D[index] = new VertexPositionNormalColor(new Vector3(Terrain.max, 0.7f *  Terrain.maxHeight, Terrain.max), new Vector3(0.0f, 1.0f, 0.0f), blue);
+            index++;
+
+            // Front left.
+            terrain3D[index] = new VertexPositionNormalColor(new Vector3(0.0f,  0.7f * Terrain.maxHeight, 0.0f), new Vector3(0.0f, 1.0f, 0.0f), blue);
+            index++;
+
+            // Back right.
+            terrain3D[index] = new VertexPositionNormalColor(new Vector3(Terrain.max, 0.7f * Terrain.maxHeight, Terrain.max), new Vector3(0.0f, 1.0f, 0.0f), blue);
+            index++;
+
+            // Front right.
+            terrain3D[index] = new VertexPositionNormalColor(new Vector3(Terrain.max, 0.7f * Terrain.maxHeight, 0.0f), new Vector3(0.0f, 1.0f, 0.0f), blue);
+            index++;
+
+
+
             //initialized here because I wanted the terrain details to place the initial position/target.
             currentPosition = new Vector3(0.0f, (Terrain.get(0, 0)+10.0f), 0.0f); //start on corner of map at height of terrain
             currentTarget = new Vector3(Terrain.max, Terrain.get(Terrain.max, Terrain.max), Terrain.max); //looking across to the other corner
@@ -67,11 +93,15 @@ namespace Project1
             {
                 VertexColorEnabled = true,
                 View = Matrix.LookAtLH(new Vector3(0.0f, 40.0f, 0.0f ), new Vector3(0.0f,0.0f,0.5f), Vector3.UnitY),
-                Projection = Matrix.PerspectiveFovLH((float)Math.PI / 4.0f, (float)game.GraphicsDevice.BackBuffer.Width / game.GraphicsDevice.BackBuffer.Height, -10.0f, Terrain.max + 10.0f),
-                World = Matrix.Identity
+                Projection = Matrix.PerspectiveFovLH((float)Math.PI / 4.0f, (float)game.GraphicsDevice.BackBuffer.Width / game.GraphicsDevice.BackBuffer.Height, -10.0f, (float) Terrain.size + 10.0f),
+                World = Matrix.Identity,
+                LightingEnabled = true
             };
+
            
             inputLayout = VertexInputLayout.FromBuffer(0, vertices);
+            basicEffect.EnableDefaultLighting();
+            
             this.game = game;
         }
 
@@ -161,7 +191,7 @@ namespace Project1
             currentTarget = Vector3.TransformCoordinate(currentTarget, translation);
 
             basicEffect.View = Matrix.LookAtLH(currentPosition, currentTarget, currentUp);
-            basicEffect.Projection = Matrix.PerspectiveFovLH((float)Math.PI / 4.0f, (float)game.GraphicsDevice.BackBuffer.Width / game.GraphicsDevice.BackBuffer.Height, 0.1f, 100.0f);
+            basicEffect.Projection = Matrix.PerspectiveFovLH((float)Math.PI / 4.0f, (float)game.GraphicsDevice.BackBuffer.Width / game.GraphicsDevice.BackBuffer.Height, 0.1f, (float) Terrain.size + 10f);
         }
 
         public override void Draw(GameTime gameTime)
