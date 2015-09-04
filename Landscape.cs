@@ -14,12 +14,12 @@ namespace Project1
         Vector3 currentPosition, currentTarget, currentUp;
         float prevMouseX, prevMouseY;
         HeightMap Terrain;
+        float waterHeight;
 
         public Landscape(Game game)
-        {
-            
+        {            
             Terrain = new HeightMap(10);
-            VertexPositionNormalColor[] terrain3D = new VertexPositionNormalColor[Terrain.max * Terrain.max * 6  + 6];
+            VertexPositionNormalColor[] terrain3D = new VertexPositionNormalColor[Terrain.max * Terrain.max * 6  + 12];
             int index = 0;
             for (int z = 0; z < Terrain.max; z++)
             {
@@ -50,39 +50,67 @@ namespace Project1
                 }
             }
 
+
             Color blue = Color.MidnightBlue;
 
+            waterHeight = 0.8f * Terrain.maxHeight;
+
+
             // Front left.
-            terrain3D[index] = new VertexPositionNormalColor(new Vector3(0.0f, 0.7f * Terrain.maxHeight, 0.0f), new Vector3(0.0f, 1.0f, 0.0f), blue);
+            terrain3D[index] = new VertexPositionNormalColor(new Vector3(0.0f, waterHeight, 0.0f), new Vector3(0.0f, 1.0f, 0.0f), blue);
             index++;
+
             // Back left.
-            terrain3D[index] = new VertexPositionNormalColor(new Vector3(0.0f, 0.7f * Terrain.maxHeight, Terrain.max), new Vector3(0.0f, 1.0f, 0.0f), blue);
+            terrain3D[index] = new VertexPositionNormalColor(new Vector3(0.0f, waterHeight, Terrain.max), new Vector3(0.0f, 1.0f, 0.0f), blue);
             index++;
 
             // Back right.
-            terrain3D[index] = new VertexPositionNormalColor(new Vector3(Terrain.max, 0.7f *  Terrain.maxHeight, Terrain.max), new Vector3(0.0f, 1.0f, 0.0f), blue);
+            terrain3D[index] = new VertexPositionNormalColor(new Vector3(Terrain.max, waterHeight, Terrain.max), new Vector3(0.0f, 1.0f, 0.0f), blue);
             index++;
 
             // Front left.
-            terrain3D[index] = new VertexPositionNormalColor(new Vector3(0.0f,  0.7f * Terrain.maxHeight, 0.0f), new Vector3(0.0f, 1.0f, 0.0f), blue);
+            terrain3D[index] = new VertexPositionNormalColor(new Vector3(0.0f, waterHeight, 0.0f), new Vector3(0.0f, 1.0f, 0.0f), blue);
             index++;
 
             // Back right.
-            terrain3D[index] = new VertexPositionNormalColor(new Vector3(Terrain.max, 0.7f * Terrain.maxHeight, Terrain.max), new Vector3(0.0f, 1.0f, 0.0f), blue);
+            terrain3D[index] = new VertexPositionNormalColor(new Vector3(Terrain.max, waterHeight, Terrain.max), new Vector3(0.0f, 1.0f, 0.0f), blue);
             index++;
 
             // Front right.
-            terrain3D[index] = new VertexPositionNormalColor(new Vector3(Terrain.max, 0.7f * Terrain.maxHeight, 0.0f), new Vector3(0.0f, 1.0f, 0.0f), blue);
+            terrain3D[index] = new VertexPositionNormalColor(new Vector3(Terrain.max, waterHeight, 0.0f), new Vector3(0.0f, 1.0f, 0.0f), blue);
             index++;
 
+            //water from the bottom
+            // Front left.
+            terrain3D[index] = new VertexPositionNormalColor(new Vector3(0.0f, waterHeight, 0.0f), new Vector3(0.0f, 1.0f, 0.0f), blue);
+            index++;
 
+            // Back right.
+            terrain3D[index] = new VertexPositionNormalColor(new Vector3(Terrain.max, waterHeight, Terrain.max), new Vector3(0.0f, 1.0f, 0.0f), blue);
+            index++;
+
+            // Back left.
+            terrain3D[index] = new VertexPositionNormalColor(new Vector3(0.0f, waterHeight, Terrain.max), new Vector3(0.0f, 1.0f, 0.0f), blue);
+            index++;
+
+            // Front left.
+            terrain3D[index] = new VertexPositionNormalColor(new Vector3(0.0f, waterHeight, 0.0f), new Vector3(0.0f, 1.0f, 0.0f), blue);
+            index++;
+
+            // Front right.
+            terrain3D[index] = new VertexPositionNormalColor(new Vector3(Terrain.max, waterHeight, 0.0f), new Vector3(0.0f, 1.0f, 0.0f), blue);
+            index++;
+
+            // Back right.
+            terrain3D[index] = new VertexPositionNormalColor(new Vector3(Terrain.max, waterHeight, Terrain.max), new Vector3(0.0f, 1.0f, 0.0f), blue);
+            index++;
 
             //initialized here because I wanted the terrain details to place the initial position/target.
             currentPosition = new Vector3(0.0f, (Terrain.get(0, 0)+10.0f), 0.0f); //start on corner of map at height of terrain
-            currentTarget = new Vector3(Terrain.max, Terrain.get(Terrain.max, Terrain.max), Terrain.max); //looking across to the other corner
+            currentTarget = new Vector3(Terrain.max, (Terrain.get(0, 0) + 10.0f), Terrain.max); //looking across to other corner (same height)
             currentUp = Vector3.UnitY;
-            /*prevMouseX = ((Project1Game)this.game).mouseState.X;
-            prevMouseY = ((Project1Game)this.game).mouseState.Y;*/
+            prevMouseX = 0.5f;
+            prevMouseY = 0.5f;
 
 
             //Create an Array of VertexPositionNormalColor objects to draw landscape
@@ -117,6 +145,8 @@ namespace Project1
             {
                 Vector3 temp = (currentTarget - currentPosition);
                 temp.Normalize();
+                if (currentPosition.Y > waterHeight)
+                    temp *= 2; //move slower if underwater (cuz Mat said so)
                 currentPosition += temp;
                 if (currentPosition.X < 0 || currentPosition.Y < Terrain.get((int)currentPosition.X, (int)currentPosition.Z) || currentPosition.Z < 0 || currentPosition.X < 0
                     || currentPosition.X > Terrain.max || currentPosition.Z > Terrain.max
@@ -133,6 +163,8 @@ namespace Project1
             {
                 Vector3 temp = (currentPosition - currentTarget);
                 temp.Normalize();
+                if (currentPosition.Y > waterHeight)
+                    temp *= 2; //move slower if underwater (cuz Mat said so)
                 currentPosition += temp;
                 if (currentPosition.X < 0 || currentPosition.Y < Terrain.get((int)currentPosition.X, (int)currentPosition.Z) || currentPosition.Z < 0
                     || currentPosition.X > Terrain.max || currentPosition.Z > Terrain.max
@@ -149,6 +181,8 @@ namespace Project1
             {
                 Vector3 temp = Vector3.Cross(currentTarget, currentUp);
                 temp.Normalize();
+                if (currentPosition.Y > waterHeight)
+                    temp *= 2; //move slower if underwater (cuz Mat said so)
                 currentPosition += temp;
                 if (currentPosition.X < 0 || currentPosition.Y < Terrain.get((int)currentPosition.X, (int)currentPosition.Z) || currentPosition.Z < 0
                     || currentPosition.X > Terrain.max || currentPosition.Z > Terrain.max
@@ -165,6 +199,8 @@ namespace Project1
             {
                 Vector3 temp = Vector3.Cross(currentUp, currentTarget);
                 temp.Normalize();
+                if (currentPosition.Y > waterHeight)
+                    temp *= 2; //move slower if underwater (cuz Mat said so)
                 currentPosition += temp;
                 if (currentPosition.X < 0 || currentPosition.Y < Terrain.get((int)currentPosition.X, (int)currentPosition.Z) || currentPosition.Z < 0
                     || currentPosition.X > Terrain.max || currentPosition.Z > Terrain.max
@@ -175,10 +211,10 @@ namespace Project1
                     currentTarget += temp;
             }
 
-            float Yaw = (float)Math.PI * 2 * (((Project1Game)this.game).mouseState.X - prevMouseX);
+            float Yaw = ((float)Math.PI * 2 * (((Project1Game)this.game).mouseState.X - prevMouseX));
             prevMouseX = ((Project1Game)this.game).mouseState.X;
 
-            float Pitch = (float)Math.PI * 2 * (((Project1Game)this.game).mouseState.Y - prevMouseY);
+            float Pitch = (float)Math.PI * (((Project1Game)this.game).mouseState.Y - prevMouseY);
             prevMouseY = ((Project1Game)this.game).mouseState.Y;
 
             float Roll = 0.0f;
