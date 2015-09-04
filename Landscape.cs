@@ -50,7 +50,7 @@ namespace Project1
                 }
             }
 
-            Color blue = new Color(new Vector3(0.0f, 0.0f, 255.0f), 0.5f);
+            Color blue = Color.MidnightBlue;
 
             // Front left.
             terrain3D[index] = new VertexPositionNormalColor(new Vector3(0.0f, 0.7f * Terrain.maxHeight, 0.0f), new Vector3(0.0f, 1.0f, 0.0f), blue);
