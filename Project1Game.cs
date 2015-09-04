@@ -46,6 +46,7 @@ namespace Project1
         {
             // Creates a graphics manager. This is mandatory.
             graphicsDeviceManager = new GraphicsDeviceManager(this);
+
             // Setup the relative directory to the executable directory
             // for loading contents with the ContentManager
             Content.RootDirectory = "Content";
@@ -87,6 +88,7 @@ namespace Project1
         {
             // Clears the screen with the Color.CornflowerBlue
             GraphicsDevice.Clear(Color.SkyBlue) ;
+            GraphicsDevice.SetBlendState(GraphicsDevice.BlendStates.AlphaBlend);
 
             model.Draw(gameTime);
 

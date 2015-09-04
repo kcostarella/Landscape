@@ -52,8 +52,9 @@ namespace Project1
 
 
             Color blue = Color.MidnightBlue;
+            blue.A = 0xC0;
 
-            waterHeight = 0.8f * Terrain.maxHeight;
+            waterHeight = 0.698f * Terrain.maxHeight;
 
 
             // Front left.
@@ -121,7 +122,7 @@ namespace Project1
             {
                 VertexColorEnabled = true,
                 View = Matrix.LookAtLH(new Vector3(0.0f, 40.0f, 0.0f ), new Vector3(0.0f,0.0f,0.5f), Vector3.UnitY),
-                Projection = Matrix.PerspectiveFovLH((float)Math.PI / 4.0f, (float)game.GraphicsDevice.BackBuffer.Width / game.GraphicsDevice.BackBuffer.Height, -10.0f, (float) Terrain.size + 10.0f),
+                Projection = Matrix.PerspectiveFovLH((float)Math.PI / 4.0f, (float)game.GraphicsDevice.BackBuffer.Width / game.GraphicsDevice.BackBuffer.Height, -10.0f, (float)Terrain.size + 10.0f),
                 World = Matrix.Identity,
                 LightingEnabled = true
             };
@@ -227,7 +228,7 @@ namespace Project1
             currentTarget = Vector3.TransformCoordinate(currentTarget, translation);
 
             basicEffect.View = Matrix.LookAtLH(currentPosition, currentTarget, currentUp);
-            basicEffect.Projection = Matrix.PerspectiveFovLH((float)Math.PI / 4.0f, (float)game.GraphicsDevice.BackBuffer.Width / game.GraphicsDevice.BackBuffer.Height, 0.1f, (float) Terrain.size + 10f);
+            basicEffect.Projection = Matrix.PerspectiveFovLH((float)Math.PI / 4.0f, (float)game.GraphicsDevice.BackBuffer.Width / game.GraphicsDevice.BackBuffer.Height, 0.1f, (float) Terrain.size + 10.0f);
         }
 
         public override void Draw(GameTime gameTime)

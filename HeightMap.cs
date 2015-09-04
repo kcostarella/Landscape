@@ -31,7 +31,7 @@ namespace Project1
             seed = max / 2;
             maxHeight = seed;
             //Roughness determines steepness of terrain
-            roughness = 0.15f;
+            roughness = 0.16f;
             rand = new Random();
             GenerateMap();
             GenerateVertexNormals();
@@ -136,7 +136,7 @@ namespace Project1
 
             if (value > .65 * maxHeight)
             {
-                return Color.SaddleBrown;
+                return Color.SandyBrown;
             }
             {
                 return Color.SandyBrown;
@@ -163,7 +163,7 @@ namespace Project1
             {
                 for (int x = half; x < max; x = x + size)
                 {
-                    Square(x, y, half, rand.NextFloat(-1.01f, 1.01f) * scale);
+                    Square(x, y, half, rand.NextFloat(-1.0f, 1.01f) * scale);
                 }
             }
             //Set Center Point(s) of the Diamond
@@ -171,7 +171,7 @@ namespace Project1
             {
                 for (int x = (y + half) % size; x <= max; x += size)
                 {
-                    Diamond(x, y, half, rand.NextFloat(-1.01f, 1.01f) * scale);
+                    Diamond(x, y, half, rand.NextFloat(-1.0f, 1.01f) * scale);
                 }
             }
             //Run DimondSquare on the subsize map
