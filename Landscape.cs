@@ -148,8 +148,6 @@ namespace Project1
                 temp.Normalize();
                 if (currentPosition.Y > waterHeight)
                     temp *= 2; //move slower if underwater (cuz Mat said so)
-                else
-
                 currentPosition += temp;
                 if (currentPosition.X < 0 || currentPosition.Y < Terrain.get((int)currentPosition.X, (int)currentPosition.Z) || currentPosition.Z < 0 || currentPosition.X < 0
                     || currentPosition.X > Terrain.max || currentPosition.Z > Terrain.max
