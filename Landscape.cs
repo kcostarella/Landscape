@@ -148,6 +148,8 @@ namespace Project1
                 temp.Normalize();
                 if (currentPosition.Y > waterHeight)
                     temp *= 2; //move slower if underwater (cuz Mat said so)
+                else
+
                 currentPosition += temp;
                 if (currentPosition.X < 0 || currentPosition.Y < Terrain.get((int)currentPosition.X, (int)currentPosition.Z) || currentPosition.Z < 0 || currentPosition.X < 0
                     || currentPosition.X > Terrain.max || currentPosition.Z > Terrain.max
@@ -220,12 +222,15 @@ namespace Project1
 
             float Roll = 0.0f;
             if (((Project1Game)this.game).keyboardState.IsKeyDown(SharpDX.Toolkit.Input.Keys.Q))
-                Roll -= 0.1f;
-            if (((Project1Game)this.game).keyboardState.IsKeyDown(SharpDX.Toolkit.Input.Keys.E))
                 Roll += 0.1f;
+            if (((Project1Game)this.game).keyboardState.IsKeyDown(SharpDX.Toolkit.Input.Keys.E))
+                Roll -= 0.1f;
 
-            Matrix translation = Matrix.RotationYawPitchRoll(Yaw, Pitch, Roll);
+            Matrix translation = Matrix.RotationYawPitchRoll(Yaw, Pitch, 0);
             currentTarget = Vector3.TransformCoordinate(currentTarget, translation);
+
+            translation = Matrix.RotationYawPitchRoll(0, 0, Roll);
+            currentUp = Vector3.TransformCoordinate(currentUp, translation);
 
             basicEffect.View = Matrix.LookAtLH(currentPosition, currentTarget, currentUp);
             basicEffect.Projection = Matrix.PerspectiveFovLH((float)Math.PI / 4.0f, (float)game.GraphicsDevice.BackBuffer.Width / game.GraphicsDevice.BackBuffer.Height, 0.1f, (float) Terrain.size + 10.0f);
