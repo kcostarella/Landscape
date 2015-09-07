@@ -107,12 +107,12 @@ namespace Project1
             index++;
 
             //initialized here because I wanted the terrain details to place the initial position/target.
-            currentPosition = new Vector3(0.0f, (Terrain.get(0, 0)+10.0f), 0.0f); //start on corner of map at height of terrain
-            currentTarget = new Vector3(Terrain.max, (Terrain.get(0, 0) + 10.0f), Terrain.max); //looking across to other corner (same height)
+            currentPosition = new Vector3(0.0f, Terrain.maxHeight, 0.0f); //start on corner of map at highest point of terrain
+            currentTarget = new Vector3(Terrain.max, (Terrain.get(Terrain.max, Terrain.max)), Terrain.max); //looking across to other corner (same height)
             currentUp = Vector3.UnitY;
             prevMouseX = 0.5f;
             prevMouseY = 0.5f;
-
+            
 
             //Create an Array of VertexPositionNormalColor objects to draw landscape
             vertices = Buffer.Vertex.New(
@@ -121,8 +121,8 @@ namespace Project1
             basicEffect = new BasicEffect(game.GraphicsDevice)
             {
                 VertexColorEnabled = true,
-                View = Matrix.LookAtLH(new Vector3(0.0f, 40.0f, 0.0f ), new Vector3(0.0f,0.0f,0.5f), Vector3.UnitY),
-                Projection = Matrix.PerspectiveFovLH((float)Math.PI / 4.0f, (float)game.GraphicsDevice.BackBuffer.Width / game.GraphicsDevice.BackBuffer.Height, -10.0f, (float)Terrain.size + 10.0f),
+                View = Matrix.LookAtLH(currentPosition, currentTarget, Vector3.UnitY),
+                Projection = Matrix.PerspectiveFovLH((float)Math.PI / 4.0f, (float)game.GraphicsDevice.BackBuffer.Width / game.GraphicsDevice.BackBuffer.Height, -10.0f, (float)Terrain.size + 0.0f),
                 World = Matrix.Identity,
                 LightingEnabled = true
             };
