@@ -54,7 +54,7 @@ namespace Project1
             Color blue = Color.MidnightBlue;
             blue.A = 0xC0;
 
-            waterHeight = 0.698f * Terrain.maxHeight;
+            waterHeight = 0.695f * Terrain.maxHeight;
 
 
             // Front left.
@@ -130,6 +130,7 @@ namespace Project1
            
             inputLayout = VertexInputLayout.FromBuffer(0, vertices);
             basicEffect.EnableDefaultLighting();
+            basicEffect.AmbientLightColor = new Vector3(.05f * 255/255, .05f * 244/255, .05f * 229/255);
             
             this.game = game;
         }
@@ -148,7 +149,6 @@ namespace Project1
                 temp.Normalize();
                 if (currentPosition.Y > waterHeight)
                     temp *= 2; //move slower if underwater (cuz Mat said so)
-                else
 
                 currentPosition += temp;
                 if (currentPosition.X < 0 || currentPosition.Y < Terrain.get((int)currentPosition.X, (int)currentPosition.Z) || currentPosition.Z < 0 || currentPosition.X < 0

@@ -31,7 +31,7 @@ namespace Project1
             seed = max / 2;
             maxHeight = seed;
             //Roughness determines steepness of terrain
-            roughness = 0.16f;
+            roughness = .23f;
             rand = new Random();
             GenerateMap();
             GenerateVertexNormals();
