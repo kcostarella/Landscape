@@ -34,6 +34,7 @@ namespace Project1
     {
         private GraphicsDeviceManager graphicsDeviceManager;
         private GameObject model;
+        private GameObject sun;
         public KeyboardManager keyboardManager;
         public KeyboardState keyboardState;
         public MouseManager mouseManager;
@@ -61,6 +62,7 @@ namespace Project1
         protected override void LoadContent()
         {
             model = new Landscape(this);
+            sun = new Sun(this, (Landscape) model);
 
             // Create an input layout from the vertices
 
@@ -79,6 +81,7 @@ namespace Project1
             keyboardState = keyboardManager.GetState();
             mouseState = mouseManager.GetState();
             model.Update(gameTime);
+            sun.Update(gameTime);
 
             // Handle base.Update
             base.Update(gameTime);
@@ -91,6 +94,7 @@ namespace Project1
             GraphicsDevice.SetBlendState(GraphicsDevice.BlendStates.AlphaBlend);
 
             model.Draw(gameTime);
+            sun.Draw(gameTime);
 
             // Handle base.Draw
             base.Draw(gameTime);

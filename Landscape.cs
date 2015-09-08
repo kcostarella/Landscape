@@ -13,13 +13,15 @@ namespace Project1
 
         Vector3 currentPosition, currentTarget, currentUp;
         float prevMouseX, prevMouseY;
-        HeightMap Terrain;
+        public HeightMap Terrain;
+        VertexPositionNormalColor[] terrain3D;
         float waterHeight;
-
+ 
         public Landscape(Game game)
         {            
             Terrain = new HeightMap(10);
-            VertexPositionNormalColor[] terrain3D = new VertexPositionNormalColor[Terrain.max * Terrain.max * 6  + 12];
+           
+            terrain3D = new VertexPositionNormalColor[Terrain.max * Terrain.max * 6  + 12];
             int index = 0;
             for (int z = 0; z < Terrain.max; z++)
             {
@@ -56,7 +58,7 @@ namespace Project1
 
             waterHeight = 0.695f * Terrain.maxHeight;
 
-
+            //Set Water Polygons
             // Front left.
             terrain3D[index] = new VertexPositionNormalColor(new Vector3(0.0f, waterHeight, 0.0f), new Vector3(0.0f, 1.0f, 0.0f), blue);
             index++;
@@ -114,9 +116,7 @@ namespace Project1
             prevMouseY = 0.5f;
             
 
-            //Create an Array of VertexPositionNormalColor objects to draw landscape
-            vertices = Buffer.Vertex.New(
-                          game.GraphicsDevice, terrain3D);
+            vertices = Buffer.Vertex.New(game.GraphicsDevice, terrain3D);
 
             basicEffect = new BasicEffect(game.GraphicsDevice)
             {
@@ -130,12 +130,16 @@ namespace Project1
            
             inputLayout = VertexInputLayout.FromBuffer(0, vertices);
             basicEffect.EnableDefaultLighting();
-            basicEffect.AmbientLightColor = new Vector3(.05f * 255/255, .05f * 244/255, .05f * 229/255);
             
+            basicEffect.AmbientLightColor = new Vector3(.05f * 255/255, .05f * 244/255, .05f * 229/255);
+            Console.WriteLine("Directional light 0: " + basicEffect.DirectionalLight0.Direction);
+            Console.WriteLine("Directional light 1: " + basicEffect.DirectionalLight1.Direction);
+            Console.WriteLine("Directional light 2: " + basicEffect.DirectionalLight2.Direction);
+            Console.WriteLine("Specular Color: " + basicEffect.SpecularColor);
+            Console.WriteLine("Diffuse Color: " + basicEffect.DiffuseColor);
+          
             this.game = game;
         }
-
-
 
         public override void Update(GameTime gameTime)
         {
@@ -234,6 +238,14 @@ namespace Project1
 
             basicEffect.View = Matrix.LookAtLH(currentPosition, currentTarget, currentUp);
             basicEffect.Projection = Matrix.PerspectiveFovLH((float)Math.PI / 4.0f, (float)game.GraphicsDevice.BackBuffer.Width / game.GraphicsDevice.BackBuffer.Height, 0.1f, (float) Terrain.size + 10.0f);
+            float offset = 0f;
+
+            basicEffect.DirectionalLight0.Direction += new Vector3(0,offset * time, 0);
+            basicEffect.DirectionalLight1.Direction += new Vector3(0,offset * time, 0);
+            basicEffect.DirectionalLight2.Direction += new Vector3(0, offset * time, 0);
+            //basicEffect.DirectionalLight0.SpecularColor += new Vector3(-offset, -offset, -offset);
+            //basicEffect.DirectionalLight0.SpecularColor += new Vector3(-offset, -offset, -offset);
+            //basicEffect.DirectionalLight0.SpecularColor += new Vector3(-offset, -offset, -offset);
         }
 
         public override void Draw(GameTime gameTime)
