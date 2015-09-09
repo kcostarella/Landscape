@@ -10,86 +10,96 @@ namespace Project1
     using SharpDX.Toolkit.Graphics;
     class Sun : ColoredGameObject
     {
-        VertexPositionNormalColor[] sun;
         Landscape landscape;
         HeightMap terrain;
-        Vector3 currentPosition, currentTarget, currentUp;
+
         public Sun(Game game, Landscape landscape)
         {
             this.landscape = landscape;
             this.terrain = landscape.Terrain;
-            sun = new VertexPositionNormalColor[12];
-            float sunX = this.terrain.size / 2;
-            float sunY = this.terrain.maxHeight + 10f;
-            float sunZ = this.terrain.size / 2;
-            float sunOffset = 10000.0f;
-            int index = 0;
-            // Front left
-            sun[index] = new VertexPositionNormalColor(new Vector3(sunX, sunY, sunZ), new Vector3(0.0f, 1.0f, 0.0f), Color.Yellow);
-            index++;
+            float sunsize = terrain.max / 4;
 
-            // Back left.
-            sun[index] = new VertexPositionNormalColor(new Vector3(sunX, sunY, sunZ + sunOffset), new Vector3(0.0f, 1.0f, 0.0f), Color.Yellow);           
-            index++;
+            Vector3 frontBottomLeftNormal = new Vector3((-0.333f * sunsize) - 10, (-0.333f * sunsize) - 10, (-0.333f * sunsize));
+            Vector3 frontTopLeftNormal = new Vector3((-0.333f * sunsize) - 10, (0.333f * sunsize) - 10, (-0.333f * sunsize));
+            Vector3 frontTopRightNormal = new Vector3((0.333f * sunsize) - 10, ( 0.333f * sunsize) - 10, (-0.333f * sunsize));
+            Vector3 frontBottomRightNormal = new Vector3((0.333f * sunsize) - 10, ( -0.333f * sunsize) - 10, (-0.333f * sunsize));
+            Vector3 backBottomLeftNormal = new Vector3((-0.333f * sunsize) - 10, ( -0.333f * sunsize) - 10, (0.333f * sunsize));
+            Vector3 backBottomRightNormal = new Vector3((0.333f * sunsize) - 10, ( -0.333f * sunsize) - 10, (0.333f * sunsize));
+            Vector3 backTopLeftNormal = new Vector3((-0.333f * sunsize) - 10, ( 0.333f * sunsize) - 10, (0.333f * sunsize));
+            Vector3 backTopRightNormal = new Vector3((0.333f * sunsize) - 10, ( 0.333f * sunsize) - 10, (0.333f * sunsize));
 
-            // Back right.
-            sun[index] = new VertexPositionNormalColor(new Vector3(sunX + sunOffset, sunY, sunZ + sunOffset), new Vector3(0.0f, 1.0f, 0.0f), Color.Yellow);
-            index++;
 
-            // Front left.
-            sun[index] = new VertexPositionNormalColor(new Vector3(sunX, sunY, sunZ), new Vector3(0.0f, 1.0f, 0.0f), Color.Yellow);
-            index++;
+            Vector3 frontBottomLeft = new Vector3((-1.0f * sunsize) - 10, ( -1.0f * sunsize) - 10, ( -1.0f * sunsize));
+            Vector3 frontTopLeft = new Vector3((-1.0f * sunsize) - 10, ( 1.0f * sunsize) - 10, ( -1.0f * sunsize));
+            Vector3 frontTopRight = new Vector3((1.0f * sunsize) - 10, ( 1.0f * sunsize) - 10, ( -1.0f * sunsize));
+            Vector3 frontBottomRight = new Vector3((1.0f * sunsize) - 10, ( -1.0f * sunsize) - 10, ( -1.0f * sunsize));
+            Vector3 backBottomLeft = new Vector3((-1.0f * sunsize) - 10, ( -1.0f * sunsize) - 10, ( 1.0f * sunsize));
+            Vector3 backBottomRight = new Vector3((1.0f * sunsize) - 10, ( -1.0f * sunsize) - 10, ( 1.0f * sunsize));
+            Vector3 backTopLeft = new Vector3((-1.0f * sunsize) - 10, ( 1.0f * sunsize) - 10, ( 1.0f * sunsize));
+            Vector3 backTopRight = new Vector3((1.0f * sunsize) - 10, ( 1.0f * sunsize) - 10, ( 1.0f * sunsize));
 
-            // Back right.
-            sun[index] = new VertexPositionNormalColor(new Vector3(sunX + sunOffset, sunY, sunZ + sunOffset), new Vector3(0.0f, 1.0f, 0.0f), Color.Yellow);
-            index++; 
+            vertices = Buffer.Vertex.New(
+                game.GraphicsDevice,
+                new[]
+                    {
+                    new VertexPositionNormalColor(frontBottomLeft, frontBottomLeftNormal, Color.Yellow), // Front
+                    new VertexPositionNormalColor(frontTopLeft, frontTopLeftNormal, Color.Yellow),
+                    new VertexPositionNormalColor(frontTopRight, frontTopRightNormal, Color.Yellow),
+                    new VertexPositionNormalColor(frontBottomLeft, frontBottomLeftNormal, Color.Yellow),
+                    new VertexPositionNormalColor(frontTopRight, frontTopRightNormal, Color.Yellow),
+                    new VertexPositionNormalColor(frontBottomRight, frontBottomRightNormal, Color.Yellow),
+                    new VertexPositionNormalColor(backBottomLeft, backBottomLeftNormal, Color.Yellow), // BACK
+                    new VertexPositionNormalColor(backTopRight, backTopRightNormal, Color.Yellow),
+                    new VertexPositionNormalColor(backTopLeft, backTopLeftNormal, Color.Yellow),
+                    new VertexPositionNormalColor(backBottomLeft, backBottomLeftNormal, Color.Yellow),
+                    new VertexPositionNormalColor(backBottomRight, backBottomRightNormal, Color.Yellow),
+                    new VertexPositionNormalColor(backTopRight, backTopRightNormal, Color.Yellow),
+                    new VertexPositionNormalColor(frontTopLeft, frontTopLeftNormal, Color.Yellow), // Top
+                    new VertexPositionNormalColor(backTopLeft, backTopLeftNormal, Color.Yellow),
+                    new VertexPositionNormalColor(backTopRight, backTopRightNormal, Color.Yellow),
+                    new VertexPositionNormalColor(frontTopLeft, frontTopLeftNormal, Color.Yellow),
+                    new VertexPositionNormalColor(backTopRight, backTopRightNormal, Color.Yellow),
+                    new VertexPositionNormalColor(frontTopRight, frontTopRightNormal, Color.Yellow),
+                    new VertexPositionNormalColor(frontBottomLeft, frontBottomLeftNormal, Color.Yellow), // Bottom
+                    new VertexPositionNormalColor(backBottomRight, backBottomRightNormal, Color.Yellow),
+                    new VertexPositionNormalColor(backBottomLeft, backBottomLeftNormal, Color.Yellow),
+                    new VertexPositionNormalColor(frontBottomLeft, frontBottomLeftNormal, Color.Yellow),
+                    new VertexPositionNormalColor(frontBottomRight, frontBottomRightNormal, Color.Yellow),
+                    new VertexPositionNormalColor(backBottomRight, backBottomRightNormal, Color.Yellow),
+                    new VertexPositionNormalColor(frontBottomLeft, frontBottomLeftNormal, Color.Yellow), // Left
+                    new VertexPositionNormalColor(backBottomLeft, backBottomLeftNormal, Color.Yellow),
+                    new VertexPositionNormalColor(backTopLeft, backTopLeftNormal, Color.Yellow),
+                    new VertexPositionNormalColor(frontBottomLeft, frontBottomLeftNormal, Color.Yellow),
+                    new VertexPositionNormalColor(backTopLeft, backTopLeftNormal, Color.Yellow),
+                    new VertexPositionNormalColor(frontTopLeft, frontTopLeftNormal, Color.Yellow),
+                    new VertexPositionNormalColor(frontBottomRight, frontBottomRightNormal, Color.Yellow), // Right
+                    new VertexPositionNormalColor(backTopRight, backTopRightNormal, Color.Yellow),
+                    new VertexPositionNormalColor(backBottomRight, backBottomRightNormal, Color.Yellow),
+                    new VertexPositionNormalColor(frontBottomRight, frontBottomRightNormal, Color.Yellow),
+                    new VertexPositionNormalColor(frontTopRight, frontTopRightNormal, Color.Yellow),
+                    new VertexPositionNormalColor(backTopRight, backTopRightNormal, Color.Yellow),
+});
 
-            // Front right.
-            sun[index] = new VertexPositionNormalColor(new Vector3(sunX + sunOffset, sunY, sunZ), new Vector3(0.0f, 1.0f, 0.0f), Color.Yellow);
-            index++; 
-
-            //sun from the bottom
-            // Front left.
-            sun[index] = new VertexPositionNormalColor(new Vector3(sunX, sunY, sunZ), new Vector3(0.0f, 1.0f, 0.0f), Color.Yellow);
-            index++; 
-
-            // Back right.
-            sun[index] = new VertexPositionNormalColor(new Vector3(sunX + sunOffset, sunY, sunZ + sunOffset), new Vector3(0.0f, 1.0f, 0.0f), Color.Yellow);
-            index++; 
-
-            // Back left.
-            sun[index] = new VertexPositionNormalColor(new Vector3(sunX, sunY, sunZ + sunOffset), new Vector3(0.0f, 1.0f, 0.0f), Color.Yellow);
-            index++; 
-
-            // Front left.
-            sun[index] = new VertexPositionNormalColor(new Vector3(sunX, sunY, sunZ), new Vector3(0.0f, 1.0f, 0.0f), Color.Yellow);
-            index++; 
-
-            // Front right.
-            sun[index] = new VertexPositionNormalColor(new Vector3(sunX + sunOffset, sunY, sunZ), new Vector3(0.0f, 1.0f, 0.0f), Color.Yellow);
-            index++; 
-
-            // Back right.
-            sun[index] = new VertexPositionNormalColor(new Vector3(sunX + sunOffset, sunY, sunZ + sunOffset), new Vector3(0.0f, 1.0f, 0.0f), Color.Yellow);
-            index++;
-
-            vertices = Buffer.Vertex.New(game.GraphicsDevice, sun);
-            currentPosition = new Vector3(0.0f, this.terrain.maxHeight, 0.0f); //start on corner of map at highest point of terrain
-            currentTarget = new Vector3(this.terrain.max, (this.terrain.get(this.terrain.max, this.terrain.max)), this.terrain.max); //looking across to other corner (same height)
-            currentUp = Vector3.UnitY;
             basicEffect = new BasicEffect(game.GraphicsDevice)
             {
                 VertexColorEnabled = true,
+                View = Matrix.LookAtLH(landscape.currentPosition, landscape.currentTarget, landscape.currentUp),
+                Projection = Matrix.PerspectiveFovLH((float)Math.PI / 4.0f, (float)game.GraphicsDevice.BackBuffer.Width / game.GraphicsDevice.BackBuffer.Height, -10.0f, (float)terrain.size + 0.0f),
                 World = Matrix.Identity,
                 LightingEnabled = true
             };
+
             inputLayout = VertexInputLayout.FromBuffer(0, vertices);
             this.game = game;
         }
 
-        public override void Update(GameTime gameTime)
+       public override void Update(GameTime gameTime)
         {
             var time = (float)gameTime.TotalGameTime.TotalSeconds;
+
+            basicEffect.View = Matrix.LookAtLH(landscape.currentPosition, landscape.currentTarget, landscape.currentUp);
+            //basicEffect.World = Matrix.RotationYawPitchRoll();
+            basicEffect.Projection = Matrix.PerspectiveFovLH((float)Math.PI / 4.0f, (float)game.GraphicsDevice.BackBuffer.Width / game.GraphicsDevice.BackBuffer.Height, 0.1f, (float)terrain.size + 10.0f);
         }
 
         public override void Draw(GameTime gameTime)
@@ -101,6 +111,8 @@ namespace Project1
             // Apply the basic effect technique and draw the rotating cube
             basicEffect.CurrentTechnique.Passes[0].Apply();
             game.GraphicsDevice.Draw(PrimitiveType.TriangleList, vertices.ElementCount);
+
+
         }
     }
 }

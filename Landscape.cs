@@ -11,7 +11,7 @@ namespace Project1
     class Landscape : ColoredGameObject
     {
 
-        Vector3 currentPosition, currentTarget, currentUp;
+        public Vector3 currentPosition, currentTarget, currentUp;
         float prevMouseX, prevMouseY;
         public HeightMap Terrain;
         VertexPositionNormalColor[] terrain3D;
@@ -110,7 +110,7 @@ namespace Project1
 
             //initialized here because I wanted the terrain details to place the initial position/target.
             currentPosition = new Vector3(0.0f, Terrain.maxHeight, 0.0f); //start on corner of map at highest point of terrain
-            currentTarget = new Vector3(Terrain.max, (Terrain.get(Terrain.max, Terrain.max)), Terrain.max); //looking across to other corner (same height)
+            currentTarget = new Vector3(Terrain.max, Terrain.maxHeight, Terrain.max); //looking across to other corner (same height)
             currentUp = Vector3.UnitY;
             prevMouseX = 0.5f;
             prevMouseY = 0.5f;
@@ -121,7 +121,7 @@ namespace Project1
             basicEffect = new BasicEffect(game.GraphicsDevice)
             {
                 VertexColorEnabled = true,
-                View = Matrix.LookAtLH(currentPosition, currentTarget, Vector3.UnitY),
+                View = Matrix.LookAtLH(currentPosition, currentTarget, currentUp),
                 Projection = Matrix.PerspectiveFovLH((float)Math.PI / 4.0f, (float)game.GraphicsDevice.BackBuffer.Width / game.GraphicsDevice.BackBuffer.Height, -10.0f, (float)Terrain.size + 0.0f),
                 World = Matrix.Identity,
                 LightingEnabled = true
