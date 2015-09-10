@@ -182,7 +182,7 @@ namespace Project1
               Note: shifting currentTarget to make sure we're facing the same direction*/
             if (((Project1Game)this.game).keyboardState.IsKeyDown(SharpDX.Toolkit.Input.Keys.A))
             {
-                Vector3 temp = Vector3.Cross(currentTarget, currentUp);
+                Vector3 temp = Vector3.Cross((currentTarget - currentPosition), currentUp);
                 temp.Normalize();
                 if (currentPosition.Y > waterHeight)
                     temp *= 2; //move slower if underwater (cuz Mat said so)
@@ -200,7 +200,7 @@ namespace Project1
               Note: shifting currentTarget to make sure we're facing the same direction*/
             if (((Project1Game)this.game).keyboardState.IsKeyDown(SharpDX.Toolkit.Input.Keys.D))
             {
-                Vector3 temp = Vector3.Cross(currentUp, currentTarget);
+                Vector3 temp = Vector3.Cross(currentUp, (currentTarget - currentPosition));
                 temp.Normalize();
                 if (currentPosition.Y > waterHeight)
                     temp *= 2; //move slower if underwater (cuz Mat said so)
