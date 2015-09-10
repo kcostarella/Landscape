@@ -132,8 +132,8 @@ namespace Project1
             inputLayout = VertexInputLayout.FromBuffer(0, vertices);
             basicEffect.EnableDefaultLighting();
             
-            basicEffect.AmbientLightColor = new Vector3(.01f * 255/255, .01f * 244/255, .01f * 229/255);
-          
+            basicEffect.AmbientLightColor = new Vector3(.1f * 255/255, .1f * 244/255, .1f * 229/255);
+            
             this.game = game;
         }
 
