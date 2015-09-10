@@ -5,6 +5,7 @@ using System.Text;
 using SharpDX;
 using SharpDX.Toolkit;
 
+/** Ko Costarella and Ellie Yeung */
 namespace Project1
 {
     public class HeightMap
@@ -89,7 +90,9 @@ namespace Project1
 
 
         }
-
+        /** Colors elements of this.map, based on their relative height compared
+         * to their relative size to this.maxHeight. */
+        
         private Color SetColor(float value)
         {
             float val;
@@ -143,10 +146,13 @@ namespace Project1
             }
         }
 
+        /** My kind-of-silly-but-it-works algorithm for making coloring look
+         * slightly more realistic. */
         private float weight(float lower, float upper, float val)
         {
             return 10 * upper * ((val - lower) / upper);
         }
+
         //Runs the Diamond Square Algorithm for a SIZE x SIZE map.
         private void DiamondSquare(int size)
         {
@@ -220,6 +226,7 @@ namespace Project1
             return sum / count;
         }
        
+        /** Does the heavy computations required to set Surface Normals. */
         private void SurfaceNormal(Vector3 frontleft, Vector3 backleft, Vector3 frontright, Vector3 backright)
         {
             Vector3 v;

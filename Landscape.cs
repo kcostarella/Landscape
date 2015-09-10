@@ -5,6 +5,7 @@ using System.Text;
 using SharpDX;
 using SharpDX.Toolkit;
 
+/** Ko Costarella and Ellie Yeung */
 namespace Project1
 {
     using SharpDX.Toolkit.Graphics;
@@ -239,10 +240,6 @@ namespace Project1
             basicEffect.DirectionalLight0.Direction = Vector3.TransformCoordinate(basicEffect.DirectionalLight0.Direction, lightRotation);
             basicEffect.DirectionalLight1.Direction = Vector3.TransformCoordinate(basicEffect.DirectionalLight1.Direction, lightRotation);
             basicEffect.DirectionalLight2.Direction = Vector3.TransformCoordinate(basicEffect.DirectionalLight2.Direction, lightRotation);
-
-            //basicEffect.DirectionalLight0.SpecularColor += new Vector3(-offset, -offset, -offset);
-            //basicEffect.DirectionalLight0.SpecularColor += new Vector3(-offset, -offset, -offset);
-            //basicEffect.DirectionalLight0.SpecularColor += new Vector3(-offset, -offset, -offset);
         }
 
         public override void Draw(GameTime gameTime)

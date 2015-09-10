@@ -22,7 +22,7 @@ using System;
 
 using SharpDX;
 using SharpDX.Toolkit;
-
+/** Ko Costarella and Ellie Yeung */
 namespace Project1
 {
     // Use this namespace here in case we need to use Direct3D11 namespace as well, as this
