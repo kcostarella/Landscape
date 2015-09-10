@@ -13,30 +13,32 @@ namespace Project1
         Landscape landscape;
         HeightMap terrain;
 
+        Vector3 frontBottomLeftNormal, frontTopLeftNormal, frontTopRightNormal, frontBottomRightNormal, backBottomLeftNormal, backBottomRightNormal, backTopLeftNormal, backTopRightNormal;
+        Vector3 frontBottomLeft, frontTopLeft, frontTopRight, frontBottomRight, backBottomLeft, backBottomRight, backTopLeft, backTopRight;
+
         public Sun(Game game, Landscape landscape)
         {
             this.landscape = landscape;
             this.terrain = landscape.Terrain;
             float sunsize = terrain.max / 4;
 
-            Vector3 frontBottomLeftNormal = new Vector3((-0.333f * sunsize) - 10, (-0.333f * sunsize) - 10, (-0.333f * sunsize));
-            Vector3 frontTopLeftNormal = new Vector3((-0.333f * sunsize) - 10, (0.333f * sunsize) - 10, (-0.333f * sunsize));
-            Vector3 frontTopRightNormal = new Vector3((0.333f * sunsize) - 10, ( 0.333f * sunsize) - 10, (-0.333f * sunsize));
-            Vector3 frontBottomRightNormal = new Vector3((0.333f * sunsize) - 10, ( -0.333f * sunsize) - 10, (-0.333f * sunsize));
-            Vector3 backBottomLeftNormal = new Vector3((-0.333f * sunsize) - 10, ( -0.333f * sunsize) - 10, (0.333f * sunsize));
-            Vector3 backBottomRightNormal = new Vector3((0.333f * sunsize) - 10, ( -0.333f * sunsize) - 10, (0.333f * sunsize));
-            Vector3 backTopLeftNormal = new Vector3((-0.333f * sunsize) - 10, ( 0.333f * sunsize) - 10, (0.333f * sunsize));
-            Vector3 backTopRightNormal = new Vector3((0.333f * sunsize) - 10, ( 0.333f * sunsize) - 10, (0.333f * sunsize));
+            frontBottomLeftNormal = new Vector3((-0.333f - 10) * sunsize, (-0.333f * sunsize) , (-0.333f - 10) * sunsize);
+            frontTopLeftNormal = new Vector3((-0.333f - 10) * sunsize, (0.333f * sunsize), (-0.333f - 10) * sunsize);
+            frontTopRightNormal = new Vector3((0.333f - 10) * sunsize, ( 0.333f * sunsize), (-0.333f - 10) * sunsize);
+            frontBottomRightNormal = new Vector3((0.333f - 10) * sunsize, ( -0.333f * sunsize), (-0.333f - 10) * sunsize);
+            backBottomLeftNormal = new Vector3((-0.333f - 10) * sunsize, ( -0.333f * sunsize), (0.333f - 10) * sunsize);
+            backBottomRightNormal = new Vector3((0.333f - 10) * sunsize, ( -0.333f * sunsize), (0.333f - 10) * sunsize);
+            backTopLeftNormal = new Vector3((-0.333f - 10) * sunsize, ( 0.333f * sunsize), (0.333f - 10) * sunsize);
+            backTopRightNormal = new Vector3((0.333f - 10) * sunsize, ( 0.333f * sunsize), (0.333f - 10) * sunsize);
 
-
-            Vector3 frontBottomLeft = new Vector3((-1.0f * sunsize) - 10, ( -1.0f * sunsize) - 10, ( -1.0f * sunsize));
-            Vector3 frontTopLeft = new Vector3((-1.0f * sunsize) - 10, ( 1.0f * sunsize) - 10, ( -1.0f * sunsize));
-            Vector3 frontTopRight = new Vector3((1.0f * sunsize) - 10, ( 1.0f * sunsize) - 10, ( -1.0f * sunsize));
-            Vector3 frontBottomRight = new Vector3((1.0f * sunsize) - 10, ( -1.0f * sunsize) - 10, ( -1.0f * sunsize));
-            Vector3 backBottomLeft = new Vector3((-1.0f * sunsize) - 10, ( -1.0f * sunsize) - 10, ( 1.0f * sunsize));
-            Vector3 backBottomRight = new Vector3((1.0f * sunsize) - 10, ( -1.0f * sunsize) - 10, ( 1.0f * sunsize));
-            Vector3 backTopLeft = new Vector3((-1.0f * sunsize) - 10, ( 1.0f * sunsize) - 10, ( 1.0f * sunsize));
-            Vector3 backTopRight = new Vector3((1.0f * sunsize) - 10, ( 1.0f * sunsize) - 10, ( 1.0f * sunsize));
+            frontBottomLeft = new Vector3((-1.0f - 10) * sunsize, ( -1.0f * sunsize), ( -1.0f - 10) * sunsize);
+            frontTopLeft = new Vector3((-1.0f - 10) * sunsize, ( 1.0f * sunsize), ( -1.0f - 10) * sunsize);
+            frontTopRight = new Vector3((1.0f - 10) * sunsize, ( 1.0f * sunsize), ( -1.0f - 10) * sunsize);
+            frontBottomRight = new Vector3((1.0f - 10) * sunsize, ( -1.0f * sunsize), ( -1.0f - 10) * sunsize);
+            backBottomLeft = new Vector3((-1.0f - 10) * sunsize, ( -1.0f * sunsize), ( 1.0f - 10) * sunsize);
+            backBottomRight = new Vector3((1.0f - 10) * sunsize, ( -1.0f * sunsize), ( 1.0f - 10) * sunsize);
+            backTopLeft = new Vector3((-1.0f - 10) * sunsize, ( 1.0f * sunsize), ( 1.0f - 10) * sunsize);
+            backTopRight = new Vector3((1.0f - 10) * sunsize, ( 1.0f * sunsize), ( 1.0f - 10) * sunsize);
 
             vertices = Buffer.Vertex.New(
                 game.GraphicsDevice,
@@ -93,7 +95,7 @@ namespace Project1
             this.game = game;
         }
 
-       public override void Update(GameTime gameTime)
+        public override void Update(GameTime gameTime)
         {
             var time = (float)gameTime.TotalGameTime.TotalSeconds;
 
