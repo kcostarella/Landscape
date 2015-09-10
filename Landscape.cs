@@ -16,7 +16,8 @@ namespace Project1
         public HeightMap Terrain;
         VertexPositionNormalColor[] terrain3D;
         float waterHeight;
- 
+        public Matrix lightRotation;
+        public float lightRotationOffset;
         public Landscape(Game game)
         {            
             Terrain = new HeightMap(10);
@@ -122,7 +123,7 @@ namespace Project1
             {
                 VertexColorEnabled = true,
                 View = Matrix.LookAtLH(currentPosition, currentTarget, currentUp),
-                Projection = Matrix.PerspectiveFovLH((float)Math.PI / 4.0f, (float)game.GraphicsDevice.BackBuffer.Width / game.GraphicsDevice.BackBuffer.Height, -10.0f, (float)Terrain.size + 0.0f),
+                Projection = Matrix.PerspectiveFovLH((float)Math.PI / 4.0f, (float)game.GraphicsDevice.BackBuffer.Width / game.GraphicsDevice.BackBuffer.Height, -10.0f, (float)Terrain.size * 2),
                 World = Matrix.Identity,
                 LightingEnabled = true
             };
@@ -131,12 +132,7 @@ namespace Project1
             inputLayout = VertexInputLayout.FromBuffer(0, vertices);
             basicEffect.EnableDefaultLighting();
             
-            basicEffect.AmbientLightColor = new Vector3(.05f * 255/255, .05f * 244/255, .05f * 229/255);
-            Console.WriteLine("Directional light 0: " + basicEffect.DirectionalLight0.Direction);
-            Console.WriteLine("Directional light 1: " + basicEffect.DirectionalLight1.Direction);
-            Console.WriteLine("Directional light 2: " + basicEffect.DirectionalLight2.Direction);
-            Console.WriteLine("Specular Color: " + basicEffect.SpecularColor);
-            Console.WriteLine("Diffuse Color: " + basicEffect.DiffuseColor);
+            basicEffect.AmbientLightColor = new Vector3(.01f * 255/255, .01f * 244/255, .01f * 229/255);
           
             this.game = game;
         }
@@ -237,12 +233,13 @@ namespace Project1
             currentUp = Vector3.TransformCoordinate(currentUp, translation);
 
             basicEffect.View = Matrix.LookAtLH(currentPosition, currentTarget, currentUp);
-            basicEffect.Projection = Matrix.PerspectiveFovLH((float)Math.PI / 4.0f, (float)game.GraphicsDevice.BackBuffer.Width / game.GraphicsDevice.BackBuffer.Height, 0.1f, (float) Terrain.size + 10.0f);
-            float offset = 0f;
+            basicEffect.Projection = Matrix.PerspectiveFovLH((float)Math.PI / 4.0f, (float)game.GraphicsDevice.BackBuffer.Width / game.GraphicsDevice.BackBuffer.Height, 0.1f, (float)Terrain.size * 2);
+            lightRotationOffset = .01f;
+            lightRotation = Matrix.RotationZ(lightRotationOffset);
+            basicEffect.DirectionalLight0.Direction = Vector3.TransformCoordinate(basicEffect.DirectionalLight0.Direction, lightRotation);
+            basicEffect.DirectionalLight1.Direction = Vector3.TransformCoordinate(basicEffect.DirectionalLight1.Direction, lightRotation);
+            basicEffect.DirectionalLight2.Direction = Vector3.TransformCoordinate(basicEffect.DirectionalLight2.Direction, lightRotation);
 
-            basicEffect.DirectionalLight0.Direction += new Vector3(0,offset * time, 0);
-            basicEffect.DirectionalLight1.Direction += new Vector3(0,offset * time, 0);
-            basicEffect.DirectionalLight2.Direction += new Vector3(0, offset * time, 0);
             //basicEffect.DirectionalLight0.SpecularColor += new Vector3(-offset, -offset, -offset);
             //basicEffect.DirectionalLight0.SpecularColor += new Vector3(-offset, -offset, -offset);
             //basicEffect.DirectionalLight0.SpecularColor += new Vector3(-offset, -offset, -offset);

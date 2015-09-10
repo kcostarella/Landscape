@@ -15,30 +15,35 @@ namespace Project1
 
         Vector3 frontBottomLeftNormal, frontTopLeftNormal, frontTopRightNormal, frontBottomRightNormal, backBottomLeftNormal, backBottomRightNormal, backTopLeftNormal, backTopRightNormal;
         Vector3 frontBottomLeft, frontTopLeft, frontTopRight, frontBottomRight, backBottomLeft, backBottomRight, backTopLeft, backTopRight;
+        float numberUpdates;
 
         public Sun(Game game, Landscape landscape)
         {
             this.landscape = landscape;
             this.terrain = landscape.Terrain;
             float sunsize = terrain.max / 4;
+            numberUpdates = 80f;
+            frontBottomLeftNormal = new Vector3(-0.333f, -0.333f,-0.333f);
+            frontTopLeftNormal = new Vector3(-0.333f, 0.333f, -0.333f);
+            frontTopRightNormal = new Vector3(0.333f, 0.333f, -0.333f);
+            frontBottomRightNormal = new Vector3(0.333f,-0.333f, -0.333f);
+            backBottomLeftNormal = new Vector3(-0.333f, -0.333f, 0.333f);
+            backBottomRightNormal = new Vector3(0.333f, -0.333f, 0.333f);
+            backTopLeftNormal = new Vector3(-0.333f,0.333f,0.333f);
+            backTopRightNormal = new Vector3(0.333f, 0.333f , 0.333f);
 
-            frontBottomLeftNormal = new Vector3((-0.333f - 10) * sunsize, (-0.333f * sunsize) , (-0.333f - 10) * sunsize);
-            frontTopLeftNormal = new Vector3((-0.333f - 10) * sunsize, (0.333f * sunsize), (-0.333f - 10) * sunsize);
-            frontTopRightNormal = new Vector3((0.333f - 10) * sunsize, ( 0.333f * sunsize), (-0.333f - 10) * sunsize);
-            frontBottomRightNormal = new Vector3((0.333f - 10) * sunsize, ( -0.333f * sunsize), (-0.333f - 10) * sunsize);
-            backBottomLeftNormal = new Vector3((-0.333f - 10) * sunsize, ( -0.333f * sunsize), (0.333f - 10) * sunsize);
-            backBottomRightNormal = new Vector3((0.333f - 10) * sunsize, ( -0.333f * sunsize), (0.333f - 10) * sunsize);
-            backTopLeftNormal = new Vector3((-0.333f - 10) * sunsize, ( 0.333f * sunsize), (0.333f - 10) * sunsize);
-            backTopRightNormal = new Vector3((0.333f - 10) * sunsize, ( 0.333f * sunsize), (0.333f - 10) * sunsize);
+            float sunX, sunY, sunZ, sunOffset;
+            sunX = terrain.size; sunY = terrain.maxHeight + 10f; sunZ = terrain.size/2; sunOffset = 40f;
+            frontBottomLeft = new Vector3(sunX-sunOffset, sunY - sunOffset, sunZ-sunOffset);
+            frontTopLeft = new Vector3(sunX-sunOffset, sunY + sunOffset, sunZ-sunOffset);
+            frontTopRight = new Vector3(sunX + sunOffset, sunY + sunOffset, sunZ-sunOffset);
+            frontBottomRight = new Vector3(sunX + sunOffset, sunY - sunOffset, sunZ-sunOffset);
+            backBottomLeft = new Vector3(sunX-sunOffset, sunY - sunOffset, sunZ + sunOffset);
+            backBottomRight = new Vector3(sunX + sunOffset, sunY - sunOffset, sunZ + sunOffset);
+            backTopLeft = new Vector3(sunX-sunOffset, sunY + sunOffset, sunZ + sunOffset);
+            backTopRight = new Vector3(sunX + sunOffset, sunY + sunOffset, sunZ + sunOffset);
 
-            frontBottomLeft = new Vector3((-1.0f - 10) * sunsize, ( -1.0f * sunsize), ( -1.0f - 10) * sunsize);
-            frontTopLeft = new Vector3((-1.0f - 10) * sunsize, ( 1.0f * sunsize), ( -1.0f - 10) * sunsize);
-            frontTopRight = new Vector3((1.0f - 10) * sunsize, ( 1.0f * sunsize), ( -1.0f - 10) * sunsize);
-            frontBottomRight = new Vector3((1.0f - 10) * sunsize, ( -1.0f * sunsize), ( -1.0f - 10) * sunsize);
-            backBottomLeft = new Vector3((-1.0f - 10) * sunsize, ( -1.0f * sunsize), ( 1.0f - 10) * sunsize);
-            backBottomRight = new Vector3((1.0f - 10) * sunsize, ( -1.0f * sunsize), ( 1.0f - 10) * sunsize);
-            backTopLeft = new Vector3((-1.0f - 10) * sunsize, ( 1.0f * sunsize), ( 1.0f - 10) * sunsize);
-            backTopRight = new Vector3((1.0f - 10) * sunsize, ( 1.0f * sunsize), ( 1.0f - 10) * sunsize);
+
 
             vertices = Buffer.Vertex.New(
                 game.GraphicsDevice,
@@ -82,14 +87,16 @@ namespace Project1
                     new VertexPositionNormalColor(backTopRight, backTopRightNormal, Color.Yellow),
 });
 
+            
             basicEffect = new BasicEffect(game.GraphicsDevice)
             {
                 VertexColorEnabled = true,
                 View = Matrix.LookAtLH(landscape.currentPosition, landscape.currentTarget, landscape.currentUp),
-                Projection = Matrix.PerspectiveFovLH((float)Math.PI / 4.0f, (float)game.GraphicsDevice.BackBuffer.Width / game.GraphicsDevice.BackBuffer.Height, -10.0f, (float)terrain.size + 0.0f),
+                Projection = Matrix.PerspectiveFovLH((float)Math.PI / 4.0f, (float)game.GraphicsDevice.BackBuffer.Width / game.GraphicsDevice.BackBuffer.Height, -10.0f, (float)terrain.size * 2),
                 World = Matrix.Identity,
-                LightingEnabled = true
             };
+
+
 
             inputLayout = VertexInputLayout.FromBuffer(0, vertices);
             this.game = game;
@@ -98,10 +105,12 @@ namespace Project1
         public override void Update(GameTime gameTime)
         {
             var time = (float)gameTime.TotalGameTime.TotalSeconds;
-
+            numberUpdates++;
             basicEffect.View = Matrix.LookAtLH(landscape.currentPosition, landscape.currentTarget, landscape.currentUp);
-            //basicEffect.World = Matrix.RotationYawPitchRoll();
-            basicEffect.Projection = Matrix.PerspectiveFovLH((float)Math.PI / 4.0f, (float)game.GraphicsDevice.BackBuffer.Width / game.GraphicsDevice.BackBuffer.Height, 0.1f, (float)terrain.size + 10.0f);
+            Matrix lightTranslation = Matrix.Translation(new Vector3(terrain.size / 2, 0.0f, 0.0f));
+            Matrix lightRotation = Matrix.RotationZ(landscape.lightRotationOffset * numberUpdates);
+            basicEffect.World = lightRotation * lightTranslation;
+            basicEffect.Projection = Matrix.PerspectiveFovLH((float)Math.PI / 4.0f, (float)game.GraphicsDevice.BackBuffer.Width / game.GraphicsDevice.BackBuffer.Height, 0.1f, (float)terrain.size * 2);
         }
 
         public override void Draw(GameTime gameTime)
